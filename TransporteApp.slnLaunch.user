@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "TransporteWeb\\TransporteWeb.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "TransporteApi\\TransporteApi.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

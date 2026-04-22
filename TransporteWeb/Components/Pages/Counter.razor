@@ -1,0 +1,39 @@
+﻿@page "/counter"
+@using Domain.Dto
+@using TransporteWeb.Repository.Interfaz
+@inject IBaseRepository<Rol,RolDto> RolService
+@rendermode InteractiveServer
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@foreach (var rol in roles)
+{
+    <p>@rol.Nombre</p>
+}
+
+@code {
+    private int currentCount = 0;
+    List<RolDto> roles = new List<RolDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData();
+    }
+
+    private async Task GetData()
+    {
+        roles = await RolService.GetAllAsync();
+        // Do something with the data
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

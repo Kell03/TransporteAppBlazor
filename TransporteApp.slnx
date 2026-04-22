@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Domain/Domain.csproj" Id="cfd39257-5b17-49b6-90f7-6a0ecfdd3fb1" />
+  <Project Path="TransporteApi/TransporteApi.csproj" />
+  <Project Path="TransporteWeb/TransporteWeb.csproj" Id="3fd31714-a727-4135-bb9d-0066ed45466e" />
+</Solution>

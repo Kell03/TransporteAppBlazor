@@ -1,0 +1,74 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using Domain.Dto
+@using Microsoft.AspNetCore.Authorization
+@using TransporteWeb.Repository.Interfaz
+@inject ISnackbar Snackbar
+@inject IBaseRepository<Propietario,PropietarioDto> PropietarioService
+@attribute [Authorize]
+@page "/propietario"
+<h3>PropietarioPage</h3>
+
+
+<MudPaper Height="90%" Width="90%" Class="mx-auto">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs">
+
+        <MudTabPanel Text="Lista">
+
+            <MudDataGrid T="PropietarioDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
+                         Hideable="true">
+                    
+                <Columns>
+                    <PropertyColumn Property="x => x.Nombre" Title="Nombre" />
+                    <PropertyColumn Property="x => x.NumeroIdentidad" />
+
+                    <TemplateColumn CellClass="d-flex justify-end">
+                        <CellTemplate>
+                            @{
+                                var item = context.Item;  // context es el item actual de la tabla
+                            }
+                            <MudStack Row>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                                               OnClick="() => GetItemById(item.Id)" Class="mx-1" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                               OnClick="() => DeleteItem(item.Id)" Class="mx-1" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="PropietarioDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Formulario">
+
+            <MudGrid>
+                <MudItem xs="12" sm="7" md="10">
+                      
+                    <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
+                                
+                        <MudTextField T="string" @bind-Value="_item.Nombre" Label="Nombre" Required="true" RequiredError="Nombre es requerido!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.NumeroIdentidad" Label="Numero Identidad" Required="true" RequiredError="Numero identidad es requerido!" Class="mt-3" />
+              
+                       
+    
+                    </MudForm>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3" OnClick="@(async () => await Submit())">Guardar</MudButton>
+                           
+       
+                </MudItem>
+  
+            </MudGrid>
+
+        </MudTabPanel>
+    </MudTabs>
+        
+</MudPaper>
+
+@code {
+
+}

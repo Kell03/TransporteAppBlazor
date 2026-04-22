@@ -1,0 +1,146 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using Domain.Dto
+@using Microsoft.AspNetCore.Authorization
+@using TransporteWeb.Repository.Interfaz
+@inject ISnackbar Snackbar
+@inject IBaseRepository<Conductor,ConductorDto> ConductorService
+@inject IBaseRepository<Camion,CamionDto> CamionService
+@inject IBaseRepository<Propietario,PropietarioDto> PropietarioService
+@inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> OrigenService
+@inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> DestinoService
+@inject IBaseRepository<Guia,GuiaDto> GuiaService
+@attribute [Authorize]
+@page "/guias"
+<h3>GuiasPage</h3>
+
+
+<MudPaper Height="90%" Width="90%" Class="mx-auto">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs">
+
+        <MudTabPanel Text="Lista">
+
+            <MudDataGrid T="GuiaDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
+                         Hideable="true">
+                    
+                <Columns>
+                    <PropertyColumn Property="x => x.Numero_guia" Title="Placa" />
+                    <PropertyColumn Property="x => x.Conductor.NombreCompleto" Title="Conductor" />
+                    <PropertyColumn Property="x => x.Camion.Placa1" Title="Placa" />
+                    <PropertyColumn Property="x => x.Origen.Nombre" Title="Origen" />
+                    <PropertyColumn Property="x => x.Destino.Nombre" Title="Destino" />
+
+                    <TemplateColumn CellClass="d-flex justify-end">
+                        <CellTemplate>
+                            @{
+                                var item = context.Item;  // context es el item actual de la tabla
+                            }
+                            <MudStack Row>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                                               OnClick="() => GetItemById(item.Id)" Class="mx-1" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                               OnClick="() => DeleteItem(item.Id)" Class="mx-1" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="GuiaDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Formulario">
+
+            <MudGrid>
+                <MudItem xs="12" sm="7" md="10">
+                      
+                    <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
+                                
+                        <MudTextField T="string" @bind-Value="_item.Numero_guia" Label="Numero Guia" Required="true" RequiredError="Numero Guia es requerido!" Class="mt-3" />
+                 
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Conductor_id" Label="Selecciona un Conductor"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                @foreach (var state in conductores)
+                                {
+                                    <MudSelectItem Value="@state.Id">@state.NombreCompleto</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.camion_id" Label="Selecciona un camion"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                @foreach (var state in camiones)
+                                {
+                                    <MudSelectItem Value="@state.Id">@state.Placa1</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect 
+                                T="int" 
+                                @bind-Value="_item.Origen_id"
+                                @bind-Value:after="OnOrigenChangedAsync"
+                            Label="Selecciona un origen"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                @foreach (var state in origen)
+                                {
+                                    <MudSelectItem Value="@state.Id">@($"{state.Nombre} - {state.Codigo}")</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Destino_id" Label="Selecciona un destino"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                @foreach (var state in destino)
+                                {
+                                    <MudSelectItem Value="@state.Id">@($"{state.Nombre} - {state.Codigo}")</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Tipo" Label="Selecciona la condicion"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                
+                                <MudSelectItem Value="@("Lleno")">LLENO</MudSelectItem>
+                                <MudSelectItem Value="@("Materia Prima")">MATERIA PRIMA</MudSelectItem>
+                                <MudSelectItem Value="@("Plancha")">PLANCHA</MudSelectItem>
+                                
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Status" Label="Selecciona la estatus"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                
+                                <MudSelectItem Value="@("Transito")">Transito</MudSelectItem>
+                                
+                            </MudSelect>
+                        </div>
+
+                        <MudDatePicker Label=Fecha" Class="mt-4" @bind-Date="_date" />
+
+                    </MudForm>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3" OnClick="@(async () => await Submit())">Guardar</MudButton>
+                           
+       
+                </MudItem>
+  
+            </MudGrid>
+
+        </MudTabPanel>
+    </MudTabs>
+        
+</MudPaper>
+
+
+@code {
+
+}

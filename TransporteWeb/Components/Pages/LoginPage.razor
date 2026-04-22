@@ -1,0 +1,72 @@
+﻿@page "/auth/login"
+@layout TransporteWeb.Components.Layout.LoginLayout
+@using Blazored.SessionStorage
+@using Microsoft.AspNetCore.Components.Authorization
+@using TransporteWeb.Contracts
+@using TransporteWeb.Services
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ISessionStorageService SessionStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+
+<MudPaper Class="pa-6 rounded-lg" Elevation="0">
+
+    <h3>Login</h3>
+    <MudForm @ref="_form" @bind-IsValid="@_success">
+        
+        <MudTextField T="string"
+                      @bind-Value="_item.Username"
+                      Label="Email"
+                      Required="true"
+                      RequiredError="Email es requerido!"
+                      Class="mt-3" />
+        
+        <MudTextField T="string"
+                      @bind-Value="@_item.Password"
+                      Label="Password"
+                      InputType="InputType.Password"
+                      RequiredError="Password is required!"
+                      Class="mt-3" />
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="ml-auto mt-3"
+                   OnClick="@(async () => await Submit())">
+            Login
+        </MudButton>
+        
+    </MudForm>
+</MudPaper>
+@code {
+    private MudForm _form;
+    private bool _success;
+
+    private AuthRequest? _item = new AuthRequest();
+
+
+
+
+    private async Task Submit()
+    {
+        var authResponse = await AuthService.Login(_item!);
+        if (authResponse != null)
+        {
+            try
+            {
+                
+                await SessionStorage.SetItemAsync("token", authResponse.Token);
+                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(authResponse.Token!);
+                NavigationManager.NavigateTo("/");
+            }
+            catch (Exception ex)
+            {
+                ;
+            }
+        }
+
+        
+    }
+}

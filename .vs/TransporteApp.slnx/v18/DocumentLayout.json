@@ -1,0 +1,156 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Proyectos\\TransporteApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\usuariopage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\usuariopage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\rolpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\rolpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\propietariopage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\propietariopage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\guiaspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\guiaspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\conductorpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\conductorpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\cdpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\cdpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|d:\\proyectos\\transporteapp\\transporteweb\\components\\pages\\camionpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3FD31714-A727-4135-BB9D-0066ED45466E}|TransporteWeb\\TransporteWeb.csproj|solutionrelative:transporteweb\\components\\pages\\camionpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 460,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UsuarioPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\UsuarioPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\UsuarioPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\UsuarioPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\UsuarioPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:20:34.795Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RolPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\RolPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\RolPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\RolPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\RolPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:20:04.63Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PropietarioPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\PropietarioPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\PropietarioPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\PropietarioPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\PropietarioPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:19:54.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\Home.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:19:51.626Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "GuiasPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\GuiasPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\GuiasPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\GuiasPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\GuiasPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:19:45.173Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ConductorPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\ConductorPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\ConductorPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\ConductorPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\ConductorPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:19:21.28Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CdPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\CdPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\CdPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\CdPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\CdPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:19:09.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CamionPage.razor",
+              "DocumentMoniker": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\CamionPage.razor",
+              "RelativeDocumentMoniker": "TransporteWeb\\Components\\Pages\\CamionPage.razor",
+              "ToolTip": "D:\\Proyectos\\TransporteApp\\TransporteWeb\\Components\\Pages\\CamionPage.razor",
+              "RelativeToolTip": "TransporteWeb\\Components\\Pages\\CamionPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-22T01:18:50.772Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

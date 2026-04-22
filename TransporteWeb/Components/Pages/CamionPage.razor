@@ -1,0 +1,100 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using Domain.Dto
+@using Microsoft.AspNetCore.Authorization
+@using TransporteWeb.Repository.Interfaz
+@inject ISnackbar Snackbar
+@inject IBaseRepository<Camion,CamionDto> CamionService
+@inject IBaseRepository<Propietario,PropietarioDto> PropietarioService
+@attribute [Authorize]
+@page "/camion"
+<h3>CamionPage</h3>
+
+
+<MudPaper Height="90%" Width="90%" Class="mx-auto">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs">
+
+        <MudTabPanel Text="Lista">
+
+            <MudDataGrid T="CamionDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
+                         Hideable="true">
+                    
+                <Columns>
+                    <PropertyColumn Property="x => x.Placa1" Title="Placa" />
+                    <PropertyColumn Property="x => x.Propietario.Nombre" Title="Propietario" />
+
+                    <TemplateColumn CellClass="d-flex justify-end">
+                        <CellTemplate>
+                            @{
+                                var item = context.Item;  // context es el item actual de la tabla
+                            }
+                            <MudStack Row>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                                               OnClick="() => GetItemById(item.Id)" Class="mx-1" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                               OnClick="() => DeleteItem(item.Id)" Class="mx-1" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="CamionDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Formulario">
+
+            <MudGrid>
+                <MudItem xs="12" sm="7" md="10">
+                      
+                    <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
+                                
+                        <MudTextField T="string" @bind-Value="_item.Marca" Label="Marca" Required="true" RequiredError="Nombre es requerido!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Modelo" Label="Modelo" Required="true" RequiredError="Modelo es requerido!" Class="mt-3" />
+              
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Propietario_Id" Label="Selecciona un Propietario"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                @foreach (var state in propietarios)
+                                {
+                                    <MudSelectItem Value="@state.Id">@state.Nombre</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </div>
+
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Estado" Label="Selecciona el estado"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                
+                                <MudSelectItem Value="@("ACTIVO")">ACTIVO</MudSelectItem>
+                                <MudSelectItem Value="@("INACTIVO")">INACTIVO</MudSelectItem>
+                                
+                            </MudSelect>
+                        </div>
+
+
+                        <MudTextField T="string" @bind-Value="_item.Tipo_Camion" Label="Tipo Camion" Required="true" RequiredError="Tipo Camion es requerida!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Placa1" Label="Placa" Required="true" RequiredError="Placa es requerida!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Placa2" Label="Placa 2" Required="true" RequiredError="Placa 2 es requerida!" Class="mt-3" />
+              
+                     
+                    </MudForm>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3" OnClick="@(async () => await Submit())">Guardar</MudButton>
+                           
+       
+                </MudItem>
+  
+            </MudGrid>
+
+        </MudTabPanel>
+    </MudTabs>
+        
+</MudPaper>
+
+
+@code {
+
+}

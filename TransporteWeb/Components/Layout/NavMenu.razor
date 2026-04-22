@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using TransporteWeb.Services
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudNavMenu>
+    <AuthorizeView>
+        <NotAuthorized>
+            <MudNavLink Href="/auth/login" Match="NavLinkMatch.All">Login</MudNavLink>
+        </NotAuthorized>
+        <Authorized>
+        <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+    <MudNavLink Href="/guias" Match="NavLinkMatch.Prefix">Guias</MudNavLink>
+    <MudNavGroup Title="Configuracion" Expanded="false">
+        <MudNavLink Href="/propietario" Match="NavLinkMatch.Prefix">Propietarios</MudNavLink>
+        <MudNavLink Href="/camion" Match="NavLinkMatch.Prefix">Camiones</MudNavLink>
+        <MudNavLink Href="/conductor" Match="NavLinkMatch.Prefix">Conductores</MudNavLink>
+        <MudNavLink Href="/centrodistribucion" Match="NavLinkMatch.Prefix">Centros de Distribucion</MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="Seguridad" Expanded="false">
+        <MudNavLink Href="/Usuario" Match="NavLinkMatch.Prefix">Usuarios</MudNavLink>
+        <MudNavLink Href="/rol" Match="NavLinkMatch.Prefix">Rol</MudNavLink>
+    </MudNavGroup>
+
+            <!-- Separador visual -->
+            <MudDivider Class="my-3" />
+    
+            <!-- Botón de logout -->
+            <MudNavLink @onclick="Logout" Style="cursor:pointer;">
+                <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Error" />
+                <MudText Color="Color.Error" Inline>Cerrar Sesión</MudText>
+            </MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+
+</MudNavMenu>
+@code {
+    private async Task Logout()
+    {
+        await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
+        NavigationManager.NavigateTo("/auth/login", true);
+    }
+}
