@@ -15,6 +15,22 @@
 
         <MudTabPanel Text="Lista">
 
+
+            @if (isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+            }
+            else
+            {
+                <InputFile OnChange="OnFileSelected" accept=".xlsx,.xls" />
+
+                <button class="btn btn-primary" @onclick="UploadFile" disabled="@(selectedFile == null || isLoading)">
+                    Subir y Procesar
+                </button>
+
+            }
+
             <MudDataGrid T="CentroDistribucionDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
                          Hideable="true">
                     

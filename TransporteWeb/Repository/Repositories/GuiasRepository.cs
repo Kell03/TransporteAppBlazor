@@ -89,5 +89,10 @@ namespace TransporteWeb.Repository.Repositories
             else
                 return null;
         }
+
+        public Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
