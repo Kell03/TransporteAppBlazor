@@ -1,0 +1,45 @@
+# Archivos de compilación
+bin/
+obj/
+*.user
+*.suo
+
+# Archivos de publicación
+Properties/PublishProfiles/
+*.pubxml
+*.pubxml.user
+
+# Ignorar carpeta .vs y todo su contenido
+.vs/
+**/.vs/
+
+# Ignorar archivos de diseño temporales
+*.dtbcache.v2
+DesignTimeBuild/
+
+# Ignorar archivos de índice de contenido
+*.wisidx
+FileContentIndex/
+
+# Ignorar archivos temporales de Visual Studio
+*.tmp
+*.temp
+
+# Archivos de usuario
+*.csproj.user
+*.sln.docstates
+
+# Carpeta de logs
+logs/
+*.log
+
+# Otras carpetas temporales
+_ReSharper.Caches/
+
+# Ignorar carpetas de compilación
+bin/
+obj/
+
+
+
+*.csproj.user
