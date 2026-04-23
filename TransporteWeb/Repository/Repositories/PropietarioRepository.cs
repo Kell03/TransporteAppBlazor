@@ -7,7 +7,7 @@ using TransporteWeb.Repository.Utils;
 
 namespace TransporteWeb.Repository.Repositories
 {
-    public class PropietarioRepository : IBaseRepository<Propietario, PropietarioDto>
+    public class PropietarioRepository : IPropietarioRepository
     {
 
         private readonly HttpClient _httpClient;
@@ -89,6 +89,29 @@ namespace TransporteWeb.Repository.Repositories
                 return await JsonSerializer.DeserializeAsync<PropietarioDto>(await response.Content.ReadAsStreamAsync());
             else
                 return null;
+        }
+
+
+        public virtual async Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
+        {
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            content.Add(streamContent, "file", fileName);
+
+            var response = await _httpClient.PostAsync($"{_baseUrl}/Propietario/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                return JsonSerializer.Deserialize<UploadResultDto>(json, options);
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al subir archivo: {response.StatusCode} - {error}");
+            }
         }
     }
 }

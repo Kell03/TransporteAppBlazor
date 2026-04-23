@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using TransporteWeb.Repository.Interfaz
 @inject ISnackbar Snackbar
-@inject IBaseRepository<Propietario,PropietarioDto> PropietarioService
+@inject IPropietarioRepository PropietarioService
 @attribute [Authorize]
 @page "/propietario"
 <h3>PropietarioPage</h3>
@@ -15,12 +15,28 @@
 
         <MudTabPanel Text="Lista">
 
+            
+
+            @if (isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+            }
+            else
+            {
+            <InputFile OnChange="OnFileSelected" accept=".xlsx,.xls" />
+
+            <button class="btn btn-primary" @onclick="UploadFile" disabled="@(selectedFile == null || isLoading)">
+                Subir y Procesar
+            </button>
+
+            }
             <MudDataGrid T="PropietarioDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
                          Hideable="true">
                     
                 <Columns>
                     <PropertyColumn Property="x => x.Nombre" Title="Nombre" />
-                    <PropertyColumn Property="x => x.NumeroIdentidad" />
+                    <PropertyColumn Property="x => x.Codigo" Title="Código" />
 
                     <TemplateColumn CellClass="d-flex justify-end">
                         <CellTemplate>
@@ -51,7 +67,7 @@
                     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
                                 
                         <MudTextField T="string" @bind-Value="_item.Nombre" Label="Nombre" Required="true" RequiredError="Nombre es requerido!" Class="mt-3" />
-                        <MudTextField T="string" @bind-Value="_item.NumeroIdentidad" Label="Numero Identidad" Required="true" RequiredError="Numero identidad es requerido!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Codigo" Label="Código" Required="true" RequiredError="Código es requerido!" Class="mt-3" />
               
                        
     

@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 namespace TransporteWeb.Components.Pages
@@ -12,6 +13,11 @@ namespace TransporteWeb.Components.Pages
         private string[] _errors = [];
         public bool Disabled { get; set; }
         private MudTabs _tabs = null!;
+
+
+        private IBrowserFile? selectedFile;
+        private bool isLoading = false;
+        private UploadResultDto? resultado;
 
         private Task ActivateAsync(int index)
         {
@@ -84,7 +90,46 @@ namespace TransporteWeb.Components.Pages
             }
         }
 
+        private void OnFileSelected(InputFileChangeEventArgs e)
+        {
+            selectedFile = e.File;
+            resultado = null;
+        }
 
+        private async Task UploadFile()
+        {
+            if (selectedFile == null) return;
+
+            isLoading = true;
+            try
+            {
+                using var stream = selectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+
+                // Llamar al servicio
+                resultado = await PropietarioService.UploadExcelAsync(stream, selectedFile.Name);
+
+                // Mostrar mensaje al usuario
+                if (resultado != null && resultado.RegistrosValidos > 0)
+                {
+                    Snackbar.Add("Propietarios cargados correctamente", Severity.Success);
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    Snackbar.Add("Error al cargar propietarios", Severity.Error);
+                    await OnInitializedAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                // Mostrar error al usuario
+            }
+            finally
+            {
+                isLoading = false;
+            }
+        }
 
     }
 }

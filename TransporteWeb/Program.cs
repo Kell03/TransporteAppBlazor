@@ -32,6 +32,7 @@ builder.Services.AddScoped<IBaseRepository<CentroDistribucion, CentroDistribucio
 builder.Services.AddScoped<IBaseRepository<Rol, RolDto>, RolRepository>();
 builder.Services.AddScoped<IBaseRepository<Usuario, UsuarioDto>, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Propietario, PropietarioDto>, PropietarioRepository>();
+builder.Services.AddScoped<IPropietarioRepository, PropietarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Camion, CamionDto>, CamionRepository>();
 builder.Services.AddScoped<IBaseRepository<Conductor, ConductorDto>, ConductorRepository>();
 builder.Services.AddScoped<IBaseRepository<Guia, GuiaDto>, GuiasRepository>();
