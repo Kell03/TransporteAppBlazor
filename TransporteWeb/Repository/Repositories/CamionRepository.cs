@@ -89,9 +89,26 @@ namespace TransporteWeb.Repository.Repositories
                 return null;
         }
 
-        public Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
+        public virtual async Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
         {
-            throw new NotImplementedException();
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            content.Add(streamContent, "file", fileName);
+
+            var response = await _httpClient.PostAsync($"{_baseUrl}/Camion/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                return JsonSerializer.Deserialize<UploadResultDto>(json, options);
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al subir archivo: {response.StatusCode} - {error}");
+            }
         }
 
     }

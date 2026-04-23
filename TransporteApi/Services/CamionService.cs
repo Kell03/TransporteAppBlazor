@@ -26,6 +26,12 @@ namespace TransporteApi.Services
             return _mapper.Map<CamionDto>(entity);
         }
 
+        public virtual async Task<CamionDto> GetByPlacaAsync(string placa)
+        {
+            var entity = await _appDbContext.Camiones.FirstOrDefaultAsync(p => p.Placa1 == placa);
+            return _mapper.Map<CamionDto>(entity);
+        }
+
 
     }
 }
