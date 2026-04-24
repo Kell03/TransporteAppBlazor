@@ -64,9 +64,12 @@
             }
 
       
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                          Clearable="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>
 
-            <MudDataGrid T="CamionDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
-                         Hideable="true">
+
+            <MudDataGrid T="CamionDto" Items="@list" SortMode="SortMode.Multiple" QuickFilter="@_quickFilter">
                     
                 <Columns>
                     <PropertyColumn Property="x => x.Placa1" Title="Placa" />

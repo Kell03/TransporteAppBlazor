@@ -18,6 +18,7 @@ namespace TransporteWeb.Components.Pages
         private IBrowserFile? selectedFile;
         private bool isLoading = false;
         private UploadResultDto? resultado;
+        private string? _searchString;
 
         private Task ActivateAsync(int index)
         {
@@ -89,6 +90,20 @@ namespace TransporteWeb.Components.Pages
                 _item = new PropietarioDto();
             }
         }
+
+        private Func<PropietarioDto, bool> _quickFilter => x =>
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
+                return true;
+
+            if (x.Codigo.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        };
 
         private void OnFileSelected(IBrowserFile file)
         {

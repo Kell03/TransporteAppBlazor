@@ -19,6 +19,8 @@ namespace TransporteWeb.Components.Pages
         private bool isLoading = false;
         private UploadResultDto? resultado;
 
+        private string _searchString;
+
         private Task ActivateAsync(int index)
         {
             return _tabs.ActivatePanelAsync(index);
@@ -90,6 +92,20 @@ namespace TransporteWeb.Components.Pages
             }
         }
 
+
+        private Func<CamionDto, bool> _quickFilter => x =>
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
+                return true;
+
+            if (x.Placa1.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Propietario.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        };
         private void OnFileSelected(IBrowserFile file)
         {
             selectedFile = file;
