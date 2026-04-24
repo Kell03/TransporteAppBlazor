@@ -43,6 +43,11 @@ namespace TransporteApi.Models
            .WithMany(p => p.Conductor)
            .HasForeignKey(d => d.Propietario_Id);
 
+            modelBuilder.Entity<Conductor>()
+           .HasOne(d => d.Camion)
+           .WithOne(p => p.Conductor)
+           .HasForeignKey<Conductor>(d => d.Camion_Id);
+
             modelBuilder.Entity<Propietario>()
            .HasMany(d => d.Camion)
            .WithOne(p => p.Propietario)

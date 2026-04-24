@@ -11,7 +11,8 @@ namespace Domain.Dto
         public string Apellido { get; set; }
         public string Cedula { get; set; }
         public int Propietario_Id { get; set; }
-
+        public int? Camion_Id { get; set; } = 0;
+        public CamionDto? Camion { get; set; } 
         public PropietarioDto? Propietario { get; set; }
         public DateTime Fecha_alta { get; set; }
         public DateTime? Fecha_Baja { get; set; }

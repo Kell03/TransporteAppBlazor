@@ -6,6 +6,9 @@
 @inject ISnackbar Snackbar
 @inject IBaseRepository<Conductor,ConductorDto> ConductorService
 @inject IBaseRepository<Propietario,PropietarioDto> PropietarioService
+@inject IBaseRepository<Camion,CamionDto> CamionService
+
+
 @attribute [Authorize]
 @page "/conductor"
 <h3>ConductorPage</h3>
@@ -57,6 +60,19 @@
                         <MudTextField T="string" @bind-Value="_item.Apellido" Label="Apellido" Required="true" RequiredError="Apellido es requerido!" Class="mt-3" />
                         <MudTextField T="string" @bind-Value="_item.Cedula" Label="Cédula" Required="true" RequiredError="Cédula es requerida!" Class="mt-3" />
               
+                        <div class="mt-6">
+                            <MudAutocomplete T="CamionDto"
+                                             Label="Buscar Camion"
+                                             @bind-Value="_item.Camion"
+                                             SearchFunc="@SearchCamiones"
+                                             ToStringFunc="@(x => x?.Placa1 ?? "")"
+                                             Variant="Variant.Outlined"
+                                             Clearable="true"
+                                             Immediate="true"
+                                             DebounceInterval="300">
+                            </MudAutocomplete>
+                        </div>
+
                         <div class="mt-6">
                             <MudSelect @bind-Value="_item.Propietario_Id" Label="Selecciona un Propietario"
                                        Variant="Variant.Outlined" ShrinkLabel>

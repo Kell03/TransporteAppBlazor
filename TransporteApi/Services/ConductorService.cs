@@ -15,7 +15,7 @@ namespace TransporteApi.Services
 
         public override async Task<IEnumerable<ConductorDto>> GetAllAsync()
         {
-            var entities = await _appDbContext.Conductores.Include(x => x.Propietario).ToListAsync();
+            var entities = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).ToListAsync();
             return _mapper.Map<IEnumerable<ConductorDto>>(entities);
         }
 
@@ -23,7 +23,7 @@ namespace TransporteApi.Services
 
         public virtual async Task<ConductorDto> GetByIdAsync(int id)
         {
-            var entity = await _appDbContext.Conductores.Include(x => x.Propietario).Where(x => x.Id == id).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).Where(x => x.Id == id).FirstOrDefaultAsync();
             return _mapper.Map<ConductorDto>(entity);
         }
     }

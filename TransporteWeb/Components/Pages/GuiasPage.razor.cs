@@ -182,15 +182,15 @@ namespace TransporteWeb.Components.Pages
         private async Task<IEnumerable<CentroDistribucionDto>> SearchCentrosDestino(string value, CancellationToken token)
         {
 
-            if (_item.Destino != null)
+            if (_item.Origen != null)
             {
                 await Task.Delay(5, token); // Simula latencia de API
 
                 if (string.IsNullOrEmpty(value))
-                    return origen;
+                    return origen.Where(x => x.Id != _item.Origen.Id);
 
                 return origen.Where(x =>
-                    x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase) && x.Id != _item.Origen_id
+                    x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase) && x.Id != _item.Origen.Id
                 );
             }
             else

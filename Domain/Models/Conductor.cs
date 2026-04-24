@@ -11,6 +11,11 @@ namespace Domain.Dto
         public string Cedula { get; set; }
         public int Propietario_Id { get; set; }
 
+        public int? Camion_Id { get; set; } = 0;
+
+        [JsonIgnore]
+        public Camion? Camion { get; set; } 
+
         [JsonIgnore]
         public Propietario? Propietario { get; set; }
         public DateTime Fecha_alta { get; set; }

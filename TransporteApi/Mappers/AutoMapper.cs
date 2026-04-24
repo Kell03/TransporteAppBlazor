@@ -47,6 +47,7 @@ namespace TransporteApi.Mappers
 
             CreateMap<ConductorDto, Conductor>()
               .ForMember(dest => dest.Propietario, opt => opt.Ignore())
+              .ForMember(dest => dest.Camion, opt => opt.Ignore())
               .ForPath(dest => dest.Propietario.Camion, opt => opt.Ignore());
             CreateMap<Conductor, ConductorDto>();
 

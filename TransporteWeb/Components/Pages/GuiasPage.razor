@@ -75,7 +75,8 @@
                                              Variant="Variant.Outlined"
                                              Clearable="true"
                                              Immediate="true"
-                                             DebounceInterval="300">
+                                             DebounceInterval="300"
+                                             @bind-Value:after="OnConductorSelected">
                             </MudAutocomplete>
                         </div>
 
@@ -128,7 +129,7 @@
                             <MudSelect @bind-Value="_item.Tipo" Label="Selecciona la condicion"
                                        Variant="Variant.Outlined" ShrinkLabel>
                                 
-                                <MudSelectItem Value="@("Lleno")">LLENO</MudSelectItem>
+                                <MudSelectItem Value="@("Circuito")">CIRCUITO</MudSelectItem>
                                 <MudSelectItem Value="@("Materia Prima")">MATERIA PRIMA</MudSelectItem>
                                 <MudSelectItem Value="@("GC")">GC</MudSelectItem>
                                 
@@ -162,5 +163,18 @@
 
 
 @code {
-
+    private async Task OnConductorSelected()
+    {
+        // Después de que _item.Conductor se actualiza, ejecuta esto
+        if (_item.Conductor != null && _item.Conductor.Camion != null)
+        {
+            _item.Camion = _item.Conductor.Camion;
+        }
+        else
+        {
+            _item.Camion = null;
+        }
+        
+        await InvokeAsync(StateHasChanged);
+    }
 }

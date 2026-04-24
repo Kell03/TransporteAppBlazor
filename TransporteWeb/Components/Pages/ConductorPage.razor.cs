@@ -11,6 +11,8 @@ namespace TransporteWeb.Components.Pages
         private ConductorDto _item = new ConductorDto();
         List<ConductorDto> list = new List<ConductorDto>();
         List<PropietarioDto> propietarios = new List<PropietarioDto>();
+        List<CamionDto> camiones = new List<CamionDto>();
+
         private string[] _errors = [];
         public bool Disabled { get; set; }
         private MudTabs _tabs = null!;
@@ -31,6 +33,7 @@ namespace TransporteWeb.Components.Pages
         {
             list = await ConductorService.GetAllAsync();
             propietarios = await PropietarioService.GetAllAsync();
+            camiones = await CamionService.GetAllAsync();
         }
 
         private async Task GetItemById(int id)
@@ -72,6 +75,7 @@ namespace TransporteWeb.Components.Pages
             {
 
                 _item.Fecha_alta = _date.Value.ToLocalTime();
+                _item.Camion_Id = _item.Camion?.Id;
                 var saveRol = (_item.Id == 0) ? await ConductorService.SaveAsync(_item) : await ConductorService.UpdateAsync(_item);
                 if (saveRol != null)
                 {
@@ -87,6 +91,18 @@ namespace TransporteWeb.Components.Pages
                 _item = new ConductorDto();
 
             }
+        }
+
+        private async Task<IEnumerable<CamionDto>> SearchCamiones(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token); // Simula latencia de API
+
+            if (string.IsNullOrEmpty(value))
+                return camiones;
+
+            return camiones.Where(x =>
+                x.Placa1.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            );
         }
     }
 }

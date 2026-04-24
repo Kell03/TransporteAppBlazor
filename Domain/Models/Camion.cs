@@ -19,6 +19,9 @@ namespace Domain.Dto
         [JsonIgnore]
         public Propietario Propietario { get; set; }
 
+        [JsonIgnore]
+        public Conductor? Conductor { get; set; }
+
         public DateTime Created_at { get; set; }
         public DateTime? Updated_at { get; set; }
     }
