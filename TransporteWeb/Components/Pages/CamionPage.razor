@@ -23,13 +23,47 @@
             }
             else
             {
-                <InputFile OnChange="OnFileSelected" accept=".xlsx,.xls" />
 
-                <button class="btn btn-primary" @onclick="UploadFile" disabled="@(selectedFile == null || isLoading)">
-                    Subir y Procesar
-                </button>
+                <MudGrid Class="mb-2">
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected">
+                            <CustomContent>
+                                <MudButton Variant="Variant.Filled"
+                                           OnClick="@context.OpenFilePickerAsync"
+                                           Color="Color.Secondary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           FullWidth="true">
+                                     Archivo
+                                </MudButton>
+                            </CustomContent>
+                            <SelectedTemplate>
+                                @if (context != null)
+                                {
+                                    <MudText>@context.Name</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>No file selected</MudText>
+                                }
+                            </SelectedTemplate>
+                        </MudFileUpload>
+                    </MudItem>
+    
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   @onclick="UploadFile"
+                                   disabled="@(selectedFile == null || isLoading)"
+                                   FullWidth="true">
+                           Procesar
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
 
+               
             }
+
+      
 
             <MudDataGrid T="CamionDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
                          Hideable="true">

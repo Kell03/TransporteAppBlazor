@@ -1,16 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@_temaPersonalizado" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" @onclick="DrawerToggle" />
-        My Application
+    <MudAppBar Style="font-size: 1.1rem;">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"  Edge="Edge.Start" @onclick="DrawerToggle" />
+        APP TMM
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
+    <MudDrawer Style="background-color: #A9A9A9;" @bind-Open="@_drawerOpen">
         <NavMenu/>
     </MudDrawer>
     <MudMainContent>
@@ -27,4 +27,16 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    private MudTheme _temaPersonalizado = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            // Aquí asignas el color que quieras para el fondo del AppBar
+            AppbarBackground = "#F28C28", // Por ejemplo, un naranja vibrante
+            Primary = "#2E8B57",         // Opcional: define también el color primario general
+            Secondary = "#A9A9A9"        // Opcional: define un color secundario
+        }
+    };
+
 }

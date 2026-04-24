@@ -91,10 +91,10 @@ namespace TransporteWeb.Components.Pages
             }
         }
 
-        private void OnFileSelected(InputFileChangeEventArgs e)
+        private void OnFileSelected(IBrowserFile file)
         {
-            selectedFile = e.File;
-            resultado = null;
+            selectedFile = file;
+
         }
 
         private async Task UploadFile()
@@ -131,7 +131,8 @@ namespace TransporteWeb.Components.Pages
                 isLoading = false;
             }
         }
-
-
     }
+
+
 }
+

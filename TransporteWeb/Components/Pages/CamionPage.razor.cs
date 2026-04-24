@@ -90,10 +90,10 @@ namespace TransporteWeb.Components.Pages
             }
         }
 
-        private void OnFileSelected(InputFileChangeEventArgs e)
+        private void OnFileSelected(IBrowserFile file)
         {
-            selectedFile = e.File;
-            resultado = null;
+            selectedFile = file;
+            
         }
 
         private async Task UploadFile()
@@ -111,12 +111,12 @@ namespace TransporteWeb.Components.Pages
                 // Mostrar mensaje al usuario
                 if (resultado != null && resultado.RegistrosValidos > 0)
                 {
-                    Snackbar.Add("Centros de distribución cargados correctamente", Severity.Success);
+                    Snackbar.Add("Camiones cargados correctamente", Severity.Success);
                     await OnInitializedAsync();
                 }
                 else
                 {
-                    Snackbar.Add("Error al cargar centros de distribución", Severity.Error);
+                    Snackbar.Add("Error al cargar camiones", Severity.Error);
                     await OnInitializedAsync();
                 }
             }

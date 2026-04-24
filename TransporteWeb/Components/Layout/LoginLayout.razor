@@ -1,10 +1,32 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@_temaPersonalizado" />
 <MudLayout>
     <MudMainContent>
         <MudPaper Height="50%" Width="50%" Class="mx-auto">
-        @Body
+            @Body
         </MudPaper>
     </MudMainContent>
 </MudLayout>
+
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private MudTheme _temaPersonalizado = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            // Aquí asignas el color que quieras para el fondo del AppBar
+            AppbarBackground = "#F28C28", // Por ejemplo, un naranja vibrante
+            Primary = "#2E8B57",         // Opcional: define también el color primario general
+            Secondary = "#FFC107"        // Opcional: define un color secundario
+        }
+    };
+
+}
