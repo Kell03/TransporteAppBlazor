@@ -19,13 +19,64 @@
 
         <MudTabPanel Text="Lista">
 
-            <MudDataGrid T="ConductorDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
-                         Hideable="true">
+            @if (isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+            }
+            else
+            {
+
+                <MudGrid Class="mb-2">
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected">
+                            <CustomContent>
+                                <MudButton Variant="Variant.Filled"
+                                           OnClick="@context.OpenFilePickerAsync"
+                                           Color="Color.Secondary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           FullWidth="true">
+                                    Archivo
+                                </MudButton>
+                            </CustomContent>
+                            <SelectedTemplate>
+                                @if (context != null)
+                                {
+                                    <MudText>@context.Name</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>No file selected</MudText>
+                                }
+                            </SelectedTemplate>
+                        </MudFileUpload>
+                    </MudItem>
+    
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   @onclick="UploadFile"
+                                   disabled="@(selectedFile == null || isLoading)"
+                                   FullWidth="true">
+                            Procesar
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+
+               
+            }
+
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                          Clearable="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>
+
+
+            <MudDataGrid T="ConductorDto" Items="@list" SortMode="SortMode.Multiple" QuickFilter="@_quickFilter">
                     
                 <Columns>
-                    <PropertyColumn Property="x => x.Nombre" Title="Placa" />
-                    <PropertyColumn Property="x => x.Apellido" Title="Placa" />
-                    <PropertyColumn Property="x => x.Cedula" Title="Placa" />
+                    <PropertyColumn Property="x => x.Nombre" Title="Nombre" />
+                    <PropertyColumn Property="x => x.Apellido" Title="Apellido" />
+                    <PropertyColumn Property="x => x.Cedula" Title="Cedula" />
                     <PropertyColumn Property="x => x.Propietario.Nombre" Title="Propietario" />
 
                     <TemplateColumn CellClass="d-flex justify-end">

@@ -19,7 +19,11 @@ namespace TransporteApi.Services
             return _mapper.Map<IEnumerable<ConductorDto>>(entities);
         }
 
-
+        public virtual async Task<ConductorDto> GetByCedulaAsync(string cedula)
+        {
+            var entity = await _appDbContext.Conductores.FirstOrDefaultAsync(p => p.Cedula == cedula);
+            return _mapper.Map<ConductorDto>(entity);
+        }
 
         public virtual async Task<ConductorDto> GetByIdAsync(int id)
         {

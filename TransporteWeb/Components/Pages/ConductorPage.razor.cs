@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 namespace TransporteWeb.Components.Pages
@@ -18,6 +19,11 @@ namespace TransporteWeb.Components.Pages
         private MudTabs _tabs = null!;
         private DateTime? _date = DateTime.Today;
 
+        private IBrowserFile? selectedFile;
+        private bool isLoading = false;
+        private UploadResultDto? resultado;
+
+        private string _searchString;
 
         private Task ActivateAsync(int index)
         {
@@ -103,6 +109,67 @@ namespace TransporteWeb.Components.Pages
             return camiones.Where(x =>
                 x.Placa1.Contains(value, StringComparison.InvariantCultureIgnoreCase)
             );
+        }
+
+
+        private Func<ConductorDto, bool> _quickFilter => x =>
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
+                return true;
+
+            if (x.NombreCompleto.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Cedula.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+
+            if (x.Propietario.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        };
+
+
+        private void OnFileSelected(IBrowserFile file)
+        {
+            selectedFile = file;
+
+        }
+
+        private async Task UploadFile()
+        {
+            if (selectedFile == null) return;
+
+            isLoading = true;
+            try
+            {
+                using var stream = selectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+
+                // Llamar al servicio
+                resultado = await ConductorService.UploadExcelAsync(stream, selectedFile.Name);
+
+                // Mostrar mensaje al usuario
+                if (resultado != null && resultado.RegistrosValidos > 0)
+                {
+                    Snackbar.Add("Conductores cargados correctamente", Severity.Success);
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    Snackbar.Add("Error al cargar conductores", Severity.Error);
+                    await OnInitializedAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                // Mostrar error al usuario
+            }
+            finally
+            {
+                isLoading = false;
+            }
         }
     }
 }
