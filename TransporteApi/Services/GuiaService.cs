@@ -21,5 +21,11 @@ namespace TransporteApi.Services
                 .ToListAsync();
             return _mapper.Map<IEnumerable<GuiaDto>>(entities);
         }
+
+        public virtual async Task<GuiaDto> GetByIdAsync(int id)
+        {
+            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Id == id).FirstOrDefaultAsync();
+            return _mapper.Map<GuiaDto>(entity);
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Domain.Dto;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
+using static MudBlazor.Colors;
 
 namespace TransporteWeb.Components.Pages
 {
@@ -18,9 +20,18 @@ namespace TransporteWeb.Components.Pages
         private MudTabs _tabs = null!;
         private DateTime? _date = DateTime.Today;
 
+        private string _searchString;
+
         private Task ActivateAsync(int index)
         {
             return _tabs.ActivatePanelAsync(index);
+        }
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                _item = new GuiaDto();
+            }
         }
 
         protected override async Task OnInitializedAsync()
@@ -55,13 +66,7 @@ namespace TransporteWeb.Components.Pages
 
         }
 
-        private async Task OnOrigenChangedAsync()
-
-        {
-
-            destino = await DestinoService.GetAllAsync();
-            destino = destino.Where(x => x.Id != _item.Origen_id).ToList();
-        }
+       
 
         private async Task DeleteItem(int id)
         {
@@ -85,6 +90,10 @@ namespace TransporteWeb.Components.Pages
             {
 
                 _item.Fecha = _date.Value.ToLocalTime();
+                _item.Origen_id = _item.Origen.Id;
+                _item.Destino_id = _item.Destino.Id;
+                _item.Conductor_id = _item.Conductor.Id;
+                _item.camion_id = _item.Camion.Id;
                 var saveRol = (_item.Id == 0) ? await GuiaService.SaveAsync(_item) : await GuiaService.UpdateAsync(_item);
                 if (saveRol != null)
                 {
@@ -99,6 +108,94 @@ namespace TransporteWeb.Components.Pages
 
                 _item = new GuiaDto();
 
+            }
+        }
+
+
+        private Func<GuiaDto, bool> _quickFilter => x =>
+        {
+            if (string.IsNullOrWhiteSpace(_searchString))
+                return true;
+
+            if (x.Numero_guia.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Conductor.NombreCompleto.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Origen.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (x.Destino.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        };
+
+
+        private async Task<IEnumerable<CamionDto>> SearchCamiones(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token); // Simula latencia de API
+
+            if (string.IsNullOrEmpty(value))
+                return camiones;
+
+            return camiones.Where(x =>
+                x.Placa1.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            );
+        }
+
+        private async Task<IEnumerable<ConductorDto>> SearchConductores(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token); // Simula latencia de API
+
+            if (string.IsNullOrEmpty(value))
+                return conductores;
+
+           
+            return conductores.Where(x =>
+                x.NombreCompleto.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            );
+        }
+
+        private async Task<IEnumerable<CentroDistribucionDto>> SearchCentros(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token); // Simula latencia de API
+
+            if(_item.Origen_id > 0)
+            {
+                return origen.Where(x =>
+               x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+               ).OrderByDescending(x => x.Id == _item.Origen_id);
+            }
+
+            if (string.IsNullOrEmpty(value))
+                return origen;
+
+            
+            return origen.Where(x =>
+                x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            );
+        }
+
+
+        private async Task<IEnumerable<CentroDistribucionDto>> SearchCentrosDestino(string value, CancellationToken token)
+        {
+
+            if (_item.Destino != null)
+            {
+                await Task.Delay(5, token); // Simula latencia de API
+
+                if (string.IsNullOrEmpty(value))
+                    return origen;
+
+                return origen.Where(x =>
+                    x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase) && x.Id != _item.Origen_id
+                );
+            }
+            else
+            {
+                return new List<CentroDistribucionDto>();
             }
         }
     }

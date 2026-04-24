@@ -16,12 +16,16 @@
 
 
 <MudPaper Height="90%" Width="90%" Class="mx-auto">
-    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs"  ActivePanelIndexChanged="OnTabChanged">
 
         <MudTabPanel Text="Lista">
 
-            <MudDataGrid T="GuiaDto" Items="@list" SortMode="SortMode.Multiple" Filterable="true"
-                         Hideable="true">
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                          Clearable="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>
+
+
+            <MudDataGrid T="GuiaDto" Items="@list" SortMode="SortMode.Multiple" QuickFilter="@_quickFilter">
                     
                 <Columns>
                     <PropertyColumn Property="x => x.Numero_guia" Title="Numero Guia" />
@@ -59,49 +63,65 @@
                     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
                                 
                         <MudTextField T="string" @bind-Value="_item.Numero_guia" Label="Numero Guia" Required="true" RequiredError="Numero Guia es requerido!" Class="mt-3" />
+
+                        <div class="mt-6">
+                        
+
+                            <MudAutocomplete T="ConductorDto"
+                                             Label="Buscar Conductor"
+                                             @bind-Value="_item.Conductor"
+                                             SearchFunc="@SearchConductores"
+                                             ToStringFunc="@(x => x?.NombreCompleto ?? "")"
+                                             Variant="Variant.Outlined"
+                                             Clearable="true"
+                                             Immediate="true"
+                                             DebounceInterval="300">
+                            </MudAutocomplete>
+                        </div>
+
                  
                         <div class="mt-6">
-                            <MudSelect @bind-Value="_item.Conductor_id" Label="Selecciona un Conductor"
-                                       Variant="Variant.Outlined" ShrinkLabel>
-                                @foreach (var state in conductores)
-                                {
-                                    <MudSelectItem Value="@state.Id">@state.NombreCompleto</MudSelectItem>
-                                }
-                            </MudSelect>
+                            <MudAutocomplete T="CamionDto"
+                                             Label="Buscar Camion"
+                                             @bind-Value="_item.Camion"
+                                             SearchFunc="@SearchCamiones"
+                                             ToStringFunc="@(x => x?.Placa1 ?? "")"
+                                             Variant="Variant.Outlined"
+                                             Clearable="true"
+                                             Immediate="true"
+                                             DebounceInterval="300">
+                            </MudAutocomplete>
+                        </div>
+
+                       
+
+                        <div class="mt-6">
+                            
+
+                            <MudAutocomplete T="CentroDistribucionDto"
+                                             Label="Buscar centro Origen"
+                                             @bind-Value="_item.Origen"
+                                             SearchFunc="@SearchCentros"
+                                             ToStringFunc="@(x => x?.Nombre ?? "")"
+                                             Variant="Variant.Outlined"
+                                             MinCharacters="0"
+                                             Clearable="true"
+                                             Immediate="true"
+                                             DebounceInterval="300">
+                            </MudAutocomplete>
                         </div>
 
                         <div class="mt-6">
-                            <MudSelect @bind-Value="_item.camion_id" Label="Selecciona un camion"
-                                       Variant="Variant.Outlined" ShrinkLabel>
-                                @foreach (var state in camiones)
-                                {
-                                    <MudSelectItem Value="@state.Id">@state.Placa1</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </div>
-
-                        <div class="mt-6">
-                            <MudSelect 
-                                T="int" 
-                                @bind-Value="_item.Origen_id"
-                                @bind-Value:after="OnOrigenChangedAsync"
-                            Label="Selecciona un origen"
-                                       Variant="Variant.Outlined" ShrinkLabel>
-                                @foreach (var state in origen)
-                                {
-                                    <MudSelectItem Value="@state.Id">@($"{state.Nombre} - {state.Codigo}")</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </div>
-
-                        <div class="mt-6">
-                            <MudSelect @bind-Value="_item.Destino_id" Label="Selecciona un destino"
-                                       Variant="Variant.Outlined" ShrinkLabel>
-                                @foreach (var state in destino)
-                                {
-                                    <MudSelectItem Value="@state.Id">@($"{state.Nombre} - {state.Codigo}")</MudSelectItem>
-                                }
-                            </MudSelect>
+                            <MudAutocomplete T="CentroDistribucionDto"
+                                             Label="Buscar centro Destino"
+                                             @bind-Value="_item.Destino"
+                                             SearchFunc="@SearchCentrosDestino"
+                                             ToStringFunc="@(x => x?.Nombre ?? "")"
+                                             Variant="Variant.Outlined"
+                                             Clearable="true"
+                                             Immediate="true"
+                                             DebounceInterval="300">
+                            </MudAutocomplete>
                         </div>
 
                         <div class="mt-6">
