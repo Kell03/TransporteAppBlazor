@@ -1,5 +1,6 @@
 ﻿using Domain.Dto;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.JSInterop;
 using MudBlazor;
 using static MudBlazor.Colors;
 
@@ -16,6 +17,7 @@ namespace TransporteWeb.Components.Pages
         List<CentroDistribucionDto> destino = new List<CentroDistribucionDto>();
         List<CamionDto> camiones = new List<CamionDto>();
         private string[] _errors = [];
+        private MudDataGrid<GuiaDto> _dataGrid;
         public bool Disabled { get; set; }
         private MudTabs _tabs = null!;
         private DateTime? _date = DateTime.Today;
@@ -196,6 +198,46 @@ namespace TransporteWeb.Components.Pages
             else
             {
                 return new List<CentroDistribucionDto>();
+            }
+        }
+
+
+        private async Task ExportarExcelAsync()
+        {
+            try
+            {
+
+                var filtrosDto = _dataGrid.FilterDefinitions.Select(f => new FilterDefinitionDto
+                {
+                    PropertyName = f.Column.PropertyName,
+                    Operator = f.Operator.ToString(),
+                    Value = f.Value,
+                    Title = f.Column.Title
+                }).ToList();
+
+                // Crear objeto con los filtros
+                var exportRequest = new ExportRequest
+                {
+                    Filtros = filtrosDto,
+                    SearchString = _searchString, // Si usas QuickFilter
+                    Formato = "excel"
+                };
+
+
+
+
+                var t = list.Where(_quickFilter).ToList();
+                await using var stream = await GuiaService.ExportExcelAsync(exportRequest);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
+
+                var fileName = $"Guias_{DateTime.Now:yyyyMMdd}.xlsx";
+                await JS.InvokeVoidAsync("downloadFile", fileName, Convert.ToBase64String(fileBytes));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
     }

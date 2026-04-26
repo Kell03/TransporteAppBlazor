@@ -31,6 +31,8 @@ namespace TransporteWeb.Repository.Repositories
             }
         }
 
+    
+
         public async Task<List<GuiaDto>> GetAllAsync()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/Guias");
@@ -93,6 +95,29 @@ namespace TransporteWeb.Repository.Repositories
         public Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Stream> ExportExcelAsync(ExportRequest exportRequest)
+        {
+            try
+            {
+                // ✅ Ver el JSON que se está enviando
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/Guias/export/excel", new StringContent(JsonSerializer.Serialize(exportRequest), Encoding.UTF8, "application/json"));
+
+
+                // ✅ Leer el error específico
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"ERROR RESPONSE: {errorContent}");
+
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStreamAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ExportarGuiasExcelStreamAsync: {ex.Message}");
+                throw;
+            }
         }
     }
 }

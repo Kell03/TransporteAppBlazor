@@ -32,6 +32,11 @@ namespace TransporteWeb.Repository.Repositories
             }
         }
 
+        public Task<bool> ExportExcelAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<ConductorDto>> GetAllAsync()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/Conductor");
@@ -113,5 +118,9 @@ namespace TransporteWeb.Repository.Repositories
             }
         }
 
+        Task<Stream> IBaseRepository<Conductor, ConductorDto>.ExportExcelAsync(ExportRequest exportRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

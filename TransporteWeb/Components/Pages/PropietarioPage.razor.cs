@@ -96,10 +96,10 @@ namespace TransporteWeb.Components.Pages
             if (string.IsNullOrWhiteSpace(_searchString))
                 return true;
 
-            if (x.Codigo.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            if (x.Codigo?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
                 return true;
 
-            if (x.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            if (x.Nombre?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
                 return true;
 
             return false;

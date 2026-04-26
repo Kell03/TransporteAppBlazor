@@ -16,6 +16,7 @@ namespace TransporteApi.Services
             var entities = await _appDbContext.Guias
                 .Include(x => x.Conductor)
                 .Include(x => x.Camion)
+                   .ThenInclude(c => c.Propietario)
                 .Include(x => x.Origen)
                 .Include(x => x.Destino)
                 .ToListAsync();

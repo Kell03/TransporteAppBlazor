@@ -32,6 +32,11 @@ namespace TransporteWeb.Repository.Repositories
             }
         }
 
+        public Task<bool> ExportExcelAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<PropietarioDto>> GetAllAsync()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/Propietario");
@@ -112,6 +117,11 @@ namespace TransporteWeb.Repository.Repositories
                 var error = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al subir archivo: {response.StatusCode} - {error}");
             }
+        }
+
+        Task<Stream> IBaseRepository<Propietario, PropietarioDto>.ExportExcelAsync(ExportRequest exportRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

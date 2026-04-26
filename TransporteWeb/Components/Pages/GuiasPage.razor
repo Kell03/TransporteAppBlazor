@@ -10,6 +10,8 @@
 @inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> OrigenService
 @inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> DestinoService
 @inject IBaseRepository<Guia,GuiaDto> GuiaService
+@inject IJSRuntime JS
+
 @attribute [Authorize]
 @page "/guias"
 <h3>GuiasPage</h3>
@@ -20,12 +22,19 @@
 
         <MudTabPanel Text="Lista">
 
+
+            <MudButton @onclick="ExportarExcelAsync" Variant="Variant.Filled" class="mb-4" Color="Color.Primary">
+                📊 Exportar a Excel
+            </MudButton>
+
             <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
                           Clearable="true"
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>
 
 
-            <MudDataGrid T="GuiaDto" Items="@list" SortMode="SortMode.Multiple" QuickFilter="@_quickFilter">
+        
+            <MudDataGrid T="GuiaDto" MultiSelection="true" Items="@list" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter" @ref="_dataGrid"
+                             Hideable="true">
                     
                 <Columns>
                     <PropertyColumn Property="x => x.Numero_guia" Title="Numero Guia" />
@@ -33,6 +42,7 @@
                     <PropertyColumn Property="x => x.Camion.Placa1" Title="Placa" />
                     <PropertyColumn Property="x => x.Origen.Nombre" Title="Origen" />
                     <PropertyColumn Property="x => x.Destino.Nombre" Title="Destino" />
+                    <PropertyColumn Property="x => x.Fecha" Title="Fecha" />
 
                     <TemplateColumn CellClass="d-flex justify-end">
                         <CellTemplate>
@@ -161,6 +171,30 @@
         
 </MudPaper>
 
+<script>
+    window.downloadFile = (fileName, base64Data) => {
+        try {
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+</script>
+
 
 @code {
     private async Task OnConductorSelected()
@@ -177,4 +211,8 @@
         
         await InvokeAsync(StateHasChanged);
     }
+
+
+
+        
 }

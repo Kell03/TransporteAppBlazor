@@ -100,5 +100,15 @@ namespace TransporteWeb.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> ExportExcelAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Stream> IBaseRepository<Rol, RolDto>.ExportExcelAsync(ExportRequest exportRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

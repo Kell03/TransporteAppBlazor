@@ -15,6 +15,7 @@ namespace TransporteWeb.Repository.Interfaz
         Task<TDto> SaveAsync(TDto entity);
 
         Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName);
+        Task<Stream> ExportExcelAsync(ExportRequest exportRequest);
 
     }
 }
