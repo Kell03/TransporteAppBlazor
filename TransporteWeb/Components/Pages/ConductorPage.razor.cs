@@ -30,6 +30,14 @@ namespace TransporteWeb.Components.Pages
             return _tabs.ActivatePanelAsync(index);
         }
 
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                _item = new ConductorDto();
+            }
+        }
+
         protected override async Task OnInitializedAsync()
         {
             await GetData();

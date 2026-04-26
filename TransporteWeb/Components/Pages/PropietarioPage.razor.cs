@@ -30,6 +30,14 @@ namespace TransporteWeb.Components.Pages
             await GetData();
         }
 
+
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                _item = new PropietarioDto();
+            }
+        }
         private async Task GetData()
         {
             list = await PropietarioService.GetAllAsync();

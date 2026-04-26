@@ -33,6 +33,13 @@ namespace TransporteWeb.Components.Pages
             await GetData();
         }
 
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                _item = new CentroDistribucionDto();
+            }
+        }
         private async Task GetData()
         {
             list = await CentroDistribucionService.GetAllAsync();

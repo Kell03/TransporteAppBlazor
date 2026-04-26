@@ -27,6 +27,14 @@ namespace TransporteWeb.Components.Pages
         {
             await GetData();
         }
+
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                _item = new UsuarioDto();
+            }
+        }
         private async Task GetData()
         {
             list = await UsuarioService.GetAllAsync();

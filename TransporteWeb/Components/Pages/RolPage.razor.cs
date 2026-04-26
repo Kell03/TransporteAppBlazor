@@ -1,6 +1,7 @@
 ﻿using Domain.Dto;
 using MudBlazor;
 using System.Text.RegularExpressions;
+using static MudBlazor.CategoryTypes;
 
 namespace TransporteWeb.Components.Pages
 {
@@ -30,6 +31,15 @@ namespace TransporteWeb.Components.Pages
             await GetData();
         }
 
+        private void OnTabChanged(int newIndex)
+        {
+            if (newIndex == 0)
+            {
+                rol = new RolDto();
+                ResetPermisos();
+
+            }
+        }
         private async Task GetData()
         {
             roles = await RolService.GetAllAsync();
