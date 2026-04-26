@@ -111,7 +111,7 @@ namespace TransporteApi.Controllers
                     if (string.IsNullOrWhiteSpace(filtro.Value?.ToString()))
                         continue;
 
-                    guiasQuery = AplicarFiltro(guiasQuery.AsQueryable(), filtro);
+                    guiasQuery =  _service.AplicarFiltro(guiasQuery.AsQueryable(), filtro);
                 }
             }
 
@@ -189,50 +189,7 @@ namespace TransporteApi.Controllers
         }
 
 
-        private IQueryable<GuiaDto> AplicarFiltro(IQueryable<GuiaDto> query, FilterDefinitionDto filtro)
-        {
-            var propertyName = filtro.PropertyName;
-            var operatorType = filtro.Operator;
-            var value = filtro.Value?.ToString();
-
-            if (string.IsNullOrWhiteSpace(value))
-                return query;
-
-            switch (propertyName)
-            {
-                case "Numero_guia":
-                    return query.Where(x => x.Numero_guia.Contains(value));
-
-                case "Tipo":
-                    return query.Where(x => x.Tipo == value);
-
-                case "Status":
-                    return query.Where(x => x.Status == value);
-
-                case "Origen.Nombre":
-                    return query.Where(x => x.Origen.Nombre.Contains(value));
-
-                case "Destino.Nombre":
-                    return query.Where(x => x.Destino.Nombre.Contains(value));
-
-                case "Conductor.NombreCompleto":
-                    return query.Where(x => x.Conductor.NombreCompleto.Contains(value));
-
-                case nameof(GuiaDto.Fecha):
-                    if (DateTime.TryParse(value, out var fecha))
-                    {
-                       
-                        if (operatorType == "is not")
-                            return query.Where(x => x.Fecha.Date != fecha.Date);
-                        if (operatorType == "is")
-                            return query.Where(x => x.Fecha.Date == fecha.Date);
-                    }
-                    return query; // Si no se pudo parsear la fecha
-
-                default:
-                    return query;
-            }
-        }
+     
      }
 
 
