@@ -22,11 +22,62 @@
 
         <MudTabPanel Text="Lista">
 
+            <MudGrid>
+                <MudItem xs="9">
+            @if (isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
 
-            <MudButton @onclick="ExportarExcelAsync" Variant="Variant.Filled" class="mb-4" Color="Color.Primary">
-                📊 Exportar a Excel
-            </MudButton>
+            }
+            else
+            {
 
+                <MudGrid Class="mb-2">
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected">
+                            <CustomContent>
+                                <MudButton Variant="Variant.Filled"
+                                           OnClick="@context.OpenFilePickerAsync"
+                                           Color="Color.Secondary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           FullWidth="true">
+                                    Archivo
+                                </MudButton>
+                            </CustomContent>
+                            <SelectedTemplate>
+                                @if (context != null)
+                                {
+                                    <MudText>@context.Name</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>No file selected</MudText>
+                                }
+                            </SelectedTemplate>
+                        </MudFileUpload>
+                    </MudItem>
+    
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   @onclick="UploadFile"
+                                   disabled="@(selectedFile == null || isLoading)"
+                                   FullWidth="true">
+                            Procesar
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+
+               
+            }
+           
+                </MudItem>
+                <MudItem xs="3">
+                    <MudButton @onclick="ExportarExcelAsync" Variant="Variant.Filled" class="mb-4" Color="Color.Primary">
+                        📊 Exportar a Excel
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
             <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
                           Clearable="true"
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>

@@ -30,5 +30,13 @@ namespace TransporteApi.Services
             var entity = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).Where(x => x.Id == id).FirstOrDefaultAsync();
             return _mapper.Map<ConductorDto>(entity);
         }
+
+        public virtual async Task<ConductorDto> GetByNombreAsync(string nombre)
+        {
+            var entity = await _appDbContext.Conductores.FirstOrDefaultAsync(x =>
+        (x.Nombre + " " + x.Apellido).Contains(nombre));
+
+            return _mapper.Map<ConductorDto>(entity);
+        }
     }
 }

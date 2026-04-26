@@ -22,5 +22,7 @@ namespace Domain.Dto
         public DateTime? Fecha_Baja { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime? Updated_at { get; set; }
+
+        public string NombreCompleto => $"{Nombre} {Apellido}".Trim();
     }
 }

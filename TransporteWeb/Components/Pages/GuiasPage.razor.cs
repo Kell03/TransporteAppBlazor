@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -21,6 +22,10 @@ namespace TransporteWeb.Components.Pages
         public bool Disabled { get; set; }
         private MudTabs _tabs = null!;
         private DateTime? _date = DateTime.Today;
+
+        private IBrowserFile? selectedFile;
+        private bool isLoading = false;
+        private UploadResultDto? resultado;
 
         private string _searchString;
 
@@ -201,6 +206,48 @@ namespace TransporteWeb.Components.Pages
             }
         }
 
+
+        private void OnFileSelected(IBrowserFile file)
+        {
+            selectedFile = file;
+
+        }
+
+
+        private async Task UploadFile()
+        {
+            if (selectedFile == null) return;
+
+            isLoading = true;
+            try
+            {
+                using var stream = selectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+
+                // Llamar al servicio
+                resultado = await GuiaService.UploadExcelAsync(stream, selectedFile.Name);
+
+                // Mostrar mensaje al usuario
+                if (resultado != null && resultado.RegistrosValidos > 0)
+                {
+                    Snackbar.Add("Guias cargadas correctamente", Severity.Success);
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    Snackbar.Add("Error al cargar guias", Severity.Error);
+                    await OnInitializedAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                // Mostrar error al usuario
+            }
+            finally
+            {
+                isLoading = false;
+            }
+        }
 
         private async Task ExportarExcelAsync()
         {
