@@ -26,7 +26,7 @@ namespace TransporteApi.Services
             }
             catch (Exception ex)
             {
-                return default(TDto);
+                throw;
             }
         }
 

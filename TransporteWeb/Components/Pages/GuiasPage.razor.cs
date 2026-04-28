@@ -234,7 +234,13 @@ namespace TransporteWeb.Components.Pages
                 }
                 else
                 {
-                    Snackbar.Add("Error al cargar guias", Severity.Error);
+
+                    var errores = resultado.Errores;
+                    string mensajeErrores = string.Join("\n", errores);
+                    Snackbar.Add($"Error al cargar guias:\n{mensajeErrores}", Severity.Error, config =>
+                    {
+                        config.VisibleStateDuration = 5000;
+                    });
                     await OnInitializedAsync();
                 }
             }

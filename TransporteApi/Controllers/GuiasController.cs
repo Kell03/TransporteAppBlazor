@@ -224,7 +224,7 @@ namespace TransporteApi.Controllers
 
                         if (guia != null)
                         {
-                            resultado.Errores.Add($"Guia ya existente se pasa a la siguiente fila");
+                           // resultado.Errores.Add($"Guia ya existente se pasa a la siguiente fila");
                             continue;
                         }
 
@@ -232,35 +232,35 @@ namespace TransporteApi.Controllers
 
                         if (propietario == null)
                         {
-                            resultado.Errores.Add($"Propietario no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Propietario no encontrado ");
                             continue;
                         }
 
                         var camion = await _camionService.GetByPlacaAsync(placa);
                         if (camion == null)
                         {
-                            resultado.Errores.Add($"Camion no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Camion no encontrado ");
                             continue;
                         }
 
                         var chofer = await _conductorservice.GetByNombreAsync(conductor);
                         if (chofer == null)
                         {
-                            resultado.Errores.Add($"Conductor no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Conductor no encontrado ");
                             continue;
                         }
 
                         var getcentro = await _Cdservice.GetByCodigoAsync(origen);
                         if (getcentro == null)
                         {
-                            resultado.Errores.Add($"Centro origen no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Centro origen no encontrado s");
                             continue;
                         }
 
                         var getcentrodestino = await _Cdservice.GetByCodigoAsync(destino);
                         if (getcentrodestino == null)
                         {
-                            resultado.Errores.Add($"Centro destino no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}:Centro destino no encontrado ");
                             continue;
                         }
 
