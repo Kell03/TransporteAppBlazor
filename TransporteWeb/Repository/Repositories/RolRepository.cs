@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using TransporteApi.Models;
 using TransporteWeb.Repository.Interfaz;
-using TransporteWeb.Repository.Utils;
+using TransporteWeb.Utils;
 
 namespace TransporteWeb.Repository.Repositories
 {

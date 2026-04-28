@@ -1,4 +1,4 @@
-﻿namespace TransporteWeb.Repository.Utils
+﻿namespace TransporteWeb.Utils
 {
     public class ApiSettings
     {

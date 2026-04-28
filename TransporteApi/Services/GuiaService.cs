@@ -73,10 +73,29 @@ namespace TransporteApi.Services
                     if (DateTime.TryParse(value, out var fecha))
                     {
 
-                        if (operatorType == "is not")
-                            return query.Where(x => x.Fecha.Date != fecha.Date);
                         if (operatorType == "is")
                             return query.Where(x => x.Fecha.Date == fecha.Date);
+
+                        if (operatorType == "is not")
+                            return query.Where(x => x.Fecha.Date != fecha.Date);
+
+                        if (operatorType == "is after")
+                            return query.Where(x => x.Fecha.Date > fecha.Date);
+
+                        if (operatorType == "is on or after")
+                            return query.Where(x => x.Fecha.Date >= fecha.Date);
+
+                        if (operatorType == "is before")
+                            return query.Where(x => x.Fecha.Date < fecha.Date);
+
+                        if (operatorType == "is on or before")
+                            return query.Where(x => x.Fecha.Date <= fecha.Date);
+
+                        if (operatorType == "is empty")
+                            return query.Where(x => x.Fecha == null);
+
+                        if (operatorType == "is not empty")
+                            return query.Where(x => x.Fecha != null);
                     }
                     return query; // Si no se pudo parsear la fecha
 

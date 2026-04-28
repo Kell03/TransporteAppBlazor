@@ -2,12 +2,15 @@ using Blazored.SessionStorage;
 using Domain.Dto;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor;
 using MudBlazor.Services;
+using MudBlazor.Translations;
+using System.Globalization;
 using TransporteWeb.Components;
 using TransporteWeb.Repository.Interfaz;
 using TransporteWeb.Repository.Repositories;
-using TransporteWeb.Repository.Utils;
 using TransporteWeb.Services;
+using TransporteWeb.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,12 +52,11 @@ builder.Services.AddHttpClient<AuthService>(options =>
     options.BaseAddress = new Uri("https://localhost:7162/api");
 });
 
-
-
 builder.Services.AddBlazoredSessionStorage();
 
-var app = builder.Build();
+builder.Services.AddMudTranslations();
 
+var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.

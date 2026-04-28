@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using TransporteWeb.Contracts;
-using TransporteWeb.Repository.Utils;
+using TransporteWeb.Utils;
 
 namespace TransporteWeb.Services
 {

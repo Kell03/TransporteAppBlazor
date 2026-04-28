@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 using TransporteWeb.Repository.Interfaz;
-using TransporteWeb.Repository.Utils;
+using TransporteWeb.Utils;
 
 namespace TransporteWeb.Repository.Repositories
 {
