@@ -4,6 +4,7 @@ using Domain.Dto;
 using Domain.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using TransporteApi.Models;
 using TransporteApi.Services;
 
@@ -200,12 +201,8 @@ namespace TransporteApi.Controllers
                         }
 
 
-                        var fecha = worksheet.Cell(row, 8).GetString()?.Trim();
-                        if (string.IsNullOrEmpty(fecha))
-                        {
-                            resultado.Errores.Add($"Fila {row}: fecha Vacia");
-                            continue;
-                        }
+                        DateTime fecha = worksheet.Cell(row, 8).GetValue<DateTime>();
+                        
 
 
                         var condicion = worksheet.Cell(row, 9).GetString()?.Trim();
@@ -222,6 +219,14 @@ namespace TransporteApi.Controllers
                             continue;
                         }
 
+
+                        var guia = await _service.GetByNumeroAsync(nroGuia);
+
+                        if (guia != null)
+                        {
+                            resultado.Errores.Add($"Guia ya existente se pasa a la siguiente fila");
+                            continue;
+                        }
 
                         var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario);
 
@@ -268,7 +273,7 @@ namespace TransporteApi.Controllers
                             Origen_id = getcentro.Id,
                             Destino_id = getcentrodestino.Id,
                             camion_id = camion.Id,
-                            Fecha = Convert.ToDateTime(fecha),
+                            Fecha = fecha,
                             Created_at = DateTime.Now,
                         };
 
@@ -311,6 +316,9 @@ namespace TransporteApi.Controllers
                 guiasQuery = guiasQuery.Where(x =>
                     x.Numero_guia.Contains(searchString) ||
                     x.Conductor.NombreCompleto.Contains(searchString) ||
+                    x.Tipo.Contains(searchString) ||
+                    x.Status.Contains(searchString) ||
+                    x.Descripcion.Contains(searchString) ||
                     x.Origen.Nombre.Contains(searchString) ||
                     x.Destino.Nombre.Contains(searchString));
             }
@@ -367,8 +375,8 @@ namespace TransporteApi.Controllers
                     worksheet.Cell(row, 2).Value = guia.Camion?.Placa1 ?? "Sin asignar";
                     worksheet.Cell(row, 3).Value = guia.Camion?.Propietario?.Codigo ?? "Sin asignar";
                     worksheet.Cell(row, 4).Value = guia.Numero_guia;
-                    worksheet.Cell(row, 5).Value = guia.Origen?.Nombre ?? "Sin definir";
-                    worksheet.Cell(row, 6).Value = guia.Destino?.Nombre ?? "Sin definir";
+                    worksheet.Cell(row, 5).Value = guia.Origen?.Codigo ?? "Sin definir";
+                    worksheet.Cell(row, 6).Value = guia.Destino?.Codigo ?? "Sin definir";
                     worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy HH:mm");
                     worksheet.Cell(row, 8).Value = guia.Tipo;
                     worksheet.Cell(row, 9).Value = guia.Status;

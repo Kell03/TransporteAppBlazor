@@ -12,6 +12,8 @@ namespace Domain.Dto
         public string Status { get; set; } = string.Empty;
         [Column("Conductor_id")]  // Nombre exacto en la BD
         public int Conductor_id { get; set; } = 0;
+
+        public string? Descripcion { get; set; } = string.Empty;
         public Conductor Conductor { get; set; }
 
         [Column("Camion_id")]  // Nombre exacto en la BD

@@ -93,7 +93,9 @@
                     <PropertyColumn Property="x => x.Camion.Placa1" Title="Placa" />
                     <PropertyColumn Property="x => x.Origen.Nombre" Title="Origen" />
                     <PropertyColumn Property="x => x.Destino.Nombre" Title="Destino" />
-                    <PropertyColumn Property="x => x.Fecha" Title="Fecha" />
+                    <PropertyColumn Property="x => x.Tipo" Title="Tipo" />
+                    <PropertyColumn Property="x => x.Descripcion" Title="Descripcion" />
+                    <PropertyColumn Property="x => x.Fecha" Title="Fecha" Format="yyyy-MM-dd" />
 
                     <TemplateColumn CellClass="d-flex justify-end">
                         <CellTemplate>
@@ -204,6 +206,13 @@
                                 <MudSelectItem Value="@("Transito")">Transito</MudSelectItem>
                                 
                             </MudSelect>
+                        </div>
+                       
+                        
+                        
+                        <div class="mt-6">
+                            <MudTextField T="string" MaxLength="200" @bind-Value="_item.Descripcion" Immediate="true" Label="Descripcion" Variant="Variant.Outlined" />
+
                         </div>
 
                         <MudDatePicker Label=Fecha" Class="mt-4" @bind-Date="_date" />

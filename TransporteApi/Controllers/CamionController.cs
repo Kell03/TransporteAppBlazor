@@ -166,11 +166,7 @@ namespace TransporteApi.Controllers
 
 
                         var placa2 = worksheet.Cell(row, 3).GetString()?.Trim();
-                        if (string.IsNullOrEmpty(placa2))
-                        {
-                            resultado.Errores.Add($"Fila {row}: Serial Carroceria Vacio");
-                            continue;
-                        }
+                       
 
                         var marca = worksheet.Cell(row, 4).GetString()?.Trim();
                         var modelo = worksheet.Cell(row, 5).GetString()?.Trim();

@@ -9,6 +9,7 @@ namespace Domain.Dto
         public string Numero_guia { get; set; } = string.Empty;
         public string Tipo { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
+        public string? Descripcion { get; set; } = string.Empty;
         public int Conductor_id { get; set; } = 0;
         [NotMapped]
         public ConductorDto? Conductor { get; set; }

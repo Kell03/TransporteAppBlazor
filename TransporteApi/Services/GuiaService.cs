@@ -29,6 +29,13 @@ namespace TransporteApi.Services
             return _mapper.Map<GuiaDto>(entity);
         }
 
+
+        public virtual async Task<GuiaDto> GetByNumeroAsync(string numero)
+        {
+            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Numero_guia == numero).FirstOrDefaultAsync();
+            return _mapper.Map<GuiaDto>(entity);
+        }
+
         public IQueryable<GuiaDto> AplicarFiltro(IQueryable<GuiaDto> query, FilterDefinitionDto filtro)
         {
             var propertyName = filtro.PropertyName;
@@ -44,10 +51,10 @@ namespace TransporteApi.Services
                     return query.Where(x => x.Numero_guia.Contains(value));
 
                 case "Tipo":
-                    return query.Where(x => x.Tipo == value);
+                    return query.Where(x => x.Tipo.Contains(value));
 
                 case "Status":
-                    return query.Where(x => x.Status == value);
+                    return query.Where(x => x.Status.Contains(value));
 
                 case "Origen.Nombre":
                     return query.Where(x => x.Origen.Nombre.Contains(value));
@@ -57,6 +64,10 @@ namespace TransporteApi.Services
 
                 case "Conductor.NombreCompleto":
                     return query.Where(x => x.Conductor.NombreCompleto.Contains(value));
+
+                case "Descripcion":
+                    return query.Where(x => x.Descripcion != null && x.Descripcion.Contains(value));
+
 
                 case nameof(GuiaDto.Fecha):
                     if (DateTime.TryParse(value, out var fecha))
