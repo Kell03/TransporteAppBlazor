@@ -88,7 +88,7 @@ namespace TransporteWeb.Components.Pages
             if (_form.IsValid)
             {
 
-                _item.Fecha_alta = _date.Value.ToLocalTime();
+                _item.Fecha_alta = _date.Value;
                 _item.Camion_Id = _item.Camion?.Id;
                 var saveRol = (_item.Id == 0) ? await ConductorService.SaveAsync(_item) : await ConductorService.UpdateAsync(_item);
                 if (saveRol != null)

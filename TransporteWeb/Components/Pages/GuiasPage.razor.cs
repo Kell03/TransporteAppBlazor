@@ -96,7 +96,7 @@ namespace TransporteWeb.Components.Pages
             if (_form.IsValid)
             {
 
-                _item.Fecha = _date.Value.ToLocalTime();
+                _item.Fecha = _date.Value;
                 _item.Origen_id = _item.Origen.Id;
                 _item.Destino_id = _item.Destino.Id;
                 _item.Conductor_id = _item.Conductor.Id;
@@ -135,6 +135,10 @@ namespace TransporteWeb.Components.Pages
 
             if (x.Destino.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
+
+            if (x.Tipo.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
 
             return false;
         };
