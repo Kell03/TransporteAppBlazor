@@ -63,7 +63,7 @@ namespace TransporteWeb.Components.Pages
             if (item != null)
             {
                 _item = item;
-                _date = _item.Fecha.ToLocalTime();
+                _date = _item.Fecha;
                 await ActivateAsync(1);
             }
             else
