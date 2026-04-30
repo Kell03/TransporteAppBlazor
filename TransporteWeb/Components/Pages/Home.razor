@@ -1,8 +1,191 @@
 ﻿@page "/"
+@using Domain.Dto
 @using Microsoft.AspNetCore.Authorization
+@using MudBlazor.Charts;
+@using TransporteWeb.Repository.Interfaz
+@inject IBaseRepository<Guia,GuiaDto> Service
+@inject IPropietarioRepository PropietarioService
+@inject IBaseRepository<Conductor,ConductorDto> ConductorService
+@inject IBaseRepository<Camion,CamionDto> CamionService
+
+
 @attribute [Authorize]
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudGrid>
+     
+        <MudItem xs="12" sm="12" md="12" Class="mb-6">
+            <h3>Dahsboard</h3>
+
+
+        </MudItem>
+
+
+        <MudItem xs="12" sm="12" md="12" Class="mb-3">
+            <MudGrid>
+                <MudItem xs="12" sm="12" md="4">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Guias</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader> 
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" />
+                            <MudText Typo="Typo.h6" Style="display: inline-block;">@totalGuias</MudText>
+                        </MudCardContent>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/guias">
+                        Agregar
+                    </MudButton>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="12" md="4">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Conductores</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" />
+                            <MudText Typo="Typo.h6" Style="display: inline-block;">@totalConductores</MudText>
+                        </MudCardContent>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/conductores">
+                            Agregar
+                        </MudButton>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="12" md="4">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Unidades</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" />
+                            <MudText Typo="Typo.h6" Style="display: inline-block;">@totalCamiones</MudText>
+                        </MudCardContent>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/camiones">
+                            Agregar
+                        </MudButton>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+
+        </MudItem>
+        
+
+        <MudItem xs="12" sm="12" md="6">
+            <MudPaper Class="doc-section-component-container">
+                <MudChart ChartType="ChartType.Line" ChartSeries="@_series" ChartLabels="@_xAxisLabels" ChartOptions="@_options" Width="100%"
+                          @bind-SelectedIndex="_index" MatchBoundsToSize="_matchBoundsToSize" />
+            </MudPaper>
+
+        </MudItem>
+
+
+        <MudItem xs="12" sm="12" md="6">
+            <MudSelect Value="idPropietario"
+                       ValueChanged="@((int nuevoId) => OnPropietarioChanged(nuevoId))"
+                       Label="Selecciona el propietario"
+                       Variant="Variant.Outlined" ShrinkLabel>
+                                
+                @foreach (var state in propietarios)
+                {
+                    <MudSelectItem Value="state.Id">@state.Nombre</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>
+@code {
+
+    List<GuiaDto> list = new List<GuiaDto>();
+    int idPropietario = 0;
+    int totalGuias = 0;
+    int totalConductores = 0;
+    int totalCamiones = 0;
+    List<PropietarioDto> propietarios = new List<PropietarioDto>();
+    List<ConductorDto> conductores = new List<ConductorDto>();
+    List<CamionDto> camiones = new List<CamionDto>();
+    private int _index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    private LineChartOptions _options = new LineChartOptions()
+    {
+        XAxisTitle = "Cargas",
+        YAxisTitle = "Cargas",
+        ShowDataMarkers = true,
+
+    };
+
+
+    private bool _matchBoundsToSize = false;
+    List<double> month = new List<double>();
+
+    private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
+    {
+    };
+    private string[] _xAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData();
+        GetMonths();
+    }
+
+    private async Task OnPropietarioChanged(int nuevoId)
+    {
+        idPropietario = nuevoId;
+        totalCamiones = camiones.Where(x => x.Propietario_Id == nuevoId).Count();
+        conductores = conductores.Where(x => x.Propietario_Id == nuevoId).ToList();
+        GetMonths(nuevoId);
+        StateHasChanged();
+    }
+
+    private async Task GetData()
+    {
+        list = await Service.GetAllAsync();
+        int añoActual = DateTime.Now.Year;
+        totalGuias = list.Where(x =>  x.Fecha.Year == añoActual).Count();
+        propietarios = await PropietarioService.GetAllAsync();
+        conductores = await ConductorService.GetAllAsync();
+        camiones = await CamionService.GetAllAsync();
+        totalConductores = conductores.Count();
+        totalCamiones = camiones.Count();
+        //destino = await DestinoService.GetAllAsync();
+    }
+
+    private void GetMonths(int idPropietario = 0)
+    {
+        _series.Clear();
+        month.Clear();
+        for (int i = 1; i <= _xAxisLabels.Length; i++)
+        {
+            int añoActual = DateTime.Now.Year;
+            if (idPropietario > 0)
+            {
+                var t = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario).Count();
+                totalGuias = list.Where(x => x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario).Count();
+                month.Add(t);
+            }
+            else
+            {
+                var t = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual).Count();
+                totalGuias = list.Where(x =>  x.Fecha.Year == añoActual).Count();
+                month.Add(t);
+            }
+            
+            
+        }
+        _series.Add(new ChartSeries<double>() { Name = "Guias", Data = month.ToArray() });
+
+    }
+}
