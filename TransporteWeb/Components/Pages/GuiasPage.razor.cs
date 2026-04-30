@@ -49,6 +49,7 @@ namespace TransporteWeb.Components.Pages
         private async Task GetData()
         {
             list = await GuiaService.GetAllAsync();
+            list = list.OrderByDescending(x => x.Id).ToList();
             conductores = await ConductorService.GetAllAsync();
             camiones = await CamionService.GetAllAsync();
             origen = await OrigenService.GetAllAsync();
