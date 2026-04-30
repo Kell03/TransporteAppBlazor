@@ -145,7 +145,7 @@
     {
         idPropietario = nuevoId;
         totalCamiones = camiones.Where(x => x.Propietario_Id == nuevoId).Count();
-        conductores = conductores.Where(x => x.Propietario_Id == nuevoId).ToList();
+        totalConductores = conductores.Where(x => x.Propietario_Id == nuevoId).Count();
         GetMonths(nuevoId);
         StateHasChanged();
     }
