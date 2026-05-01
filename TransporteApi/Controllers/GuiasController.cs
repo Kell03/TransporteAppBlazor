@@ -315,10 +315,12 @@ namespace TransporteApi.Controllers
                 var searchString = exportRequest.SearchString;
                 guiasQuery = guiasQuery.Where(x =>
                     x.Numero_guia.Contains(searchString) ||
+                    x.Conductor.Nombre.Contains(searchString) ||
+                    x.Conductor.Apellido.Contains(searchString) ||
                     x.Conductor.NombreCompleto.Contains(searchString) ||
                     x.Tipo.Contains(searchString) ||
                     x.Status.Contains(searchString) ||
-                    x.Descripcion.Contains(searchString) ||
+                    (x.Descripcion != null && x.Descripcion.Contains(searchString)) || // ← Así
                     x.Origen.Nombre.Contains(searchString) ||
                     x.Destino.Nombre.Contains(searchString));
             }
