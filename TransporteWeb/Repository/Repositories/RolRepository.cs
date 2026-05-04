@@ -1,5 +1,7 @@
-﻿using Domain.Dto;
+﻿using Blazored.SessionStorage;
+using Domain.Dto;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,18 +15,32 @@ namespace TransporteWeb.Repository.Repositories
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
+        private readonly ISessionStorageService _sessionStorageService;
 
-        public RolRepository(HttpClient httpClient, IOptions<ApiSettings> settings)
+        public RolRepository(HttpClient httpClient, IOptions<ApiSettings> settings, ISessionStorageService sessionStorageService)
         {
             _httpClient = httpClient;
             _baseUrl = settings.Value.BaseUrl;
+            _sessionStorageService = sessionStorageService;
         }
 
 
 
+        private async Task AddTokenToHeaderAsync()
+        {
+            var tokenResult = await _sessionStorageService.GetItemAsync<string>("token");
+
+            if (!string.IsNullOrEmpty(tokenResult))
+            {
+                var token = tokenResult.Trim().Replace("\"", "");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("bearer", token);
+            }
+        }
 
         public async Task<RolDto> SaveAsync(RolDto entity)
         {
+            await AddTokenToHeaderAsync();
             var response = await _httpClient.PostAsync($"{_baseUrl}/Rol", new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -44,6 +60,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<List<RolDto>> GetAllAsync()
         {
+            await AddTokenToHeaderAsync();
             var response = await _httpClient.GetAsync($"{_baseUrl}/Rol");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -57,7 +74,8 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<RolDto> GetById(int id)
         {
-           var item = await JsonSerializer.DeserializeAsync<RolDto>
+            await AddTokenToHeaderAsync();
+            var item = await JsonSerializer.DeserializeAsync<RolDto>
               (await _httpClient.GetStreamAsync($"{_baseUrl}/Rol/{id}"),new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
            
             if (item == null)
@@ -74,6 +92,7 @@ namespace TransporteWeb.Repository.Repositories
         {
             try
             {
+                await AddTokenToHeaderAsync();
                 var response = await _httpClient.DeleteAsync($"{_baseUrl}/Rol/{id}");
                 return response.IsSuccessStatusCode;
             }
@@ -85,6 +104,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<RolDto> UpdateAsync(RolDto entity)
         {
+            await AddTokenToHeaderAsync();
             var json =
          new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json");
 

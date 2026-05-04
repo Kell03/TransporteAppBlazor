@@ -1,5 +1,7 @@
-﻿using Domain.Dto;
+﻿using Blazored.SessionStorage;
+using Domain.Dto;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using TransporteWeb.Repository.Interfaz;
@@ -12,17 +14,34 @@ namespace TransporteWeb.Repository.Repositories
 
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
+        private readonly ISessionStorageService _sessionStorageService;
 
-        public UsuarioRepository(HttpClient httpClient, IOptions<ApiSettings> settings)
+        public UsuarioRepository(HttpClient httpClient, IOptions<ApiSettings> settings, ISessionStorageService sessionStorageService)
         {
             _httpClient = httpClient;
             _baseUrl = settings.Value.BaseUrl;
+            _sessionStorageService = sessionStorageService;
+        }
+
+
+        private async Task AddTokenToHeaderAsync()
+        {
+            var tokenResult = await _sessionStorageService.GetItemAsync<string>("token");
+
+            if (!string.IsNullOrEmpty(tokenResult))
+            {
+                var token = tokenResult.Trim().Replace("\"", "");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("bearer", token);
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
+                await AddTokenToHeaderAsync();
+
                 var response = await _httpClient.DeleteAsync($"{_baseUrl}/Usuario/{id}");
                 return response.IsSuccessStatusCode;
             }
@@ -39,6 +58,8 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<List<UsuarioDto>> GetAllAsync()
         {
+            await AddTokenToHeaderAsync();
+
             var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -52,6 +73,8 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<UsuarioDto> GetById(int id)
         {
+            await AddTokenToHeaderAsync();
+
             var item = await JsonSerializer.DeserializeAsync<UsuarioDto>
               (await _httpClient.GetStreamAsync($"{_baseUrl}/Usuario/{id}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
@@ -67,6 +90,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<UsuarioDto> SaveAsync(UsuarioDto entity)
         {
+            await AddTokenToHeaderAsync();
             var response = await _httpClient.PostAsync($"{_baseUrl}/Usuario", new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -85,8 +109,9 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<UsuarioDto> UpdateAsync(UsuarioDto entity)
         {
-            var json =
-        new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json");
+
+            await AddTokenToHeaderAsync();
+            var json = new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PutAsync($"{_baseUrl}/Usuario/{entity.Id}", json);
 

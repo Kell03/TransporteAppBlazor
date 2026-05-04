@@ -13,6 +13,7 @@ namespace Domain.Dto
         [NotMapped]
         public string Password { get; set; } = string.Empty;
         public int RolId { get; set; } = 0;
+        public string? Token { get; set; } = string.Empty;
 
         [NotMapped]
         public RolDto? Rol { get; set; }

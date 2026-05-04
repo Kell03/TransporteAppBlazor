@@ -1,5 +1,7 @@
-﻿using Domain.Dto;
+﻿using Blazored.SessionStorage;
+using Domain.Dto;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using TransporteWeb.Repository.Interfaz;
@@ -11,17 +13,31 @@ namespace TransporteWeb.Repository.Repositories
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
+        private readonly ISessionStorageService _sessionStorageService;
 
-        public GuiasRepository(HttpClient httpClient, IOptions<ApiSettings> settings)
+        public GuiasRepository(HttpClient httpClient, IOptions<ApiSettings> settings, ISessionStorageService sessionStorageService)
         {
             _httpClient = httpClient;
             _baseUrl = settings.Value.BaseUrl;
+            _sessionStorageService = sessionStorageService;
+        }
+        private async Task AddTokenToHeaderAsync()
+        {
+            var tokenResult = await _sessionStorageService.GetItemAsync<string>("token");
+
+            if (!string.IsNullOrEmpty(tokenResult))
+            {
+                var token = tokenResult.Trim().Replace("\"", "");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("bearer", token);
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
+                await AddTokenToHeaderAsync();
                 var response = await _httpClient.DeleteAsync($"{_baseUrl}/Guias/{id}");
                 return response.IsSuccessStatusCode;
             }
@@ -35,6 +51,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<List<GuiaDto>> GetAllAsync()
         {
+            await AddTokenToHeaderAsync();
             var response = await _httpClient.GetAsync($"{_baseUrl}/Guias");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -48,6 +65,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<GuiaDto> GetById(int id)
         {
+            await AddTokenToHeaderAsync();
             var item = await JsonSerializer.DeserializeAsync<GuiaDto>
              (await _httpClient.GetStreamAsync($"{_baseUrl}/Guias/{id}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
@@ -63,6 +81,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<GuiaDto> SaveAsync(GuiaDto entity)
         {
+            await AddTokenToHeaderAsync();
             var response = await _httpClient.PostAsync($"{_baseUrl}/Guias", new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -81,6 +100,7 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<GuiaDto> UpdateAsync(GuiaDto entity)
         {
+            await AddTokenToHeaderAsync();
             var json =
             new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, "application/json");
 
@@ -94,6 +114,8 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<UploadResultDto> UploadExcelAsync(Stream fileStream, string fileName)
         {
+
+            await AddTokenToHeaderAsync();
             using var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(fileStream);
             streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -118,7 +140,7 @@ namespace TransporteWeb.Repository.Repositories
         {
             try
             {
-                // ✅ Ver el JSON que se está enviando
+                await AddTokenToHeaderAsync();
 
                 var response = await _httpClient.PostAsync($"{_baseUrl}/Guias/export/excel", new StringContent(JsonSerializer.Serialize(exportRequest), Encoding.UTF8, "application/json"));
 

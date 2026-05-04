@@ -12,6 +12,8 @@ namespace Domain.Dto
         [NotMapped]
         public string Password { get; set; } 
         public string PasswordHash { get; set; } // ← SOLO HASH
+        [NotMapped]
+        public string? Token { get; set; } = string.Empty;
         public int RolId { get; set; }
 
         public Rol Rol { get; set; }

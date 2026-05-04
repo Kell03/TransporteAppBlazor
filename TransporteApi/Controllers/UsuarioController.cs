@@ -1,29 +1,34 @@
 ﻿using AutoMapper;
+using BCrypt.Net;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Domain.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-
+using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto.Generators;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata;
+using System.Text;
 using TransporteApi.Models;
 using TransporteApi.Services;
-using BCrypt.Net;
-using Org.BouncyCastle.Crypto.Generators;
-using System.Reflection.Metadata;
-using Domain.Dto;
 
 namespace TransporteApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsuarioController : ControllerBase
     {
 
         protected readonly UsuarioService _service;
         protected readonly IMapper _mapper;
-
-        public UsuarioController(UsuarioService service, IMapper mapper)
+        private IConfiguration _config;
+        public UsuarioController(UsuarioService service, IMapper mapper, IConfiguration config)
         {
             _service = service;
             _mapper = mapper;
+            _config = config;
         }
 
         [HttpGet]
@@ -103,12 +108,14 @@ namespace TransporteApi.Controllers
 
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UsuarioDto loginDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-   
+            
+
             var resultado = await _service.Auth(loginDto.Email);
 
             if (resultado == null)
@@ -119,9 +126,14 @@ namespace TransporteApi.Controllers
             if (passwordValida == false)
                 return Unauthorized(new { message = "Credenciales inválidas" });
 
-           
 
             var resultadoDto = _mapper.Map<UsuarioDto>(resultado);
+
+            if (passwordValida)
+            {
+                var tokenString = GenerateJSONWebToken(loginDto);
+                resultadoDto.Token = tokenString;
+            }
 
             return Ok(resultadoDto);
         }
@@ -131,6 +143,21 @@ namespace TransporteApi.Controllers
         {
 
             return Ok(await _service.DeleteAsync(id));
+        }
+
+
+        private string GenerateJSONWebToken(UsuarioDto userInfo)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

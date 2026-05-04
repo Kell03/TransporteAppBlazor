@@ -2,6 +2,7 @@
 using ClosedXML.Excel;
 using Domain.Dto;
 using Domain.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
@@ -12,6 +13,7 @@ namespace TransporteApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GuiasController : ControllerBase
     {
 
