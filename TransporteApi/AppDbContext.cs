@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Reflection.Metadata;
@@ -20,6 +21,7 @@ namespace TransporteApi.Models
         public DbSet<Propietario> Propietario => Set<Propietario>();
         public DbSet<CentroDistribucion> Centro_distribucion => Set<CentroDistribucion>();
         public DbSet<Guia> Guias => Set<Guia>();
+        public DbSet<Empresa> Empresa => Set<Empresa>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,10 @@ namespace TransporteApi.Models
            .HasForeignKey(d => d.Propietario_Id);
 
 
+            modelBuilder.Entity<Empresa>()
+           .HasMany(d => d.Usuarios)
+           .WithOne(p => p.Empresa)
+           .HasForeignKey(d => d.EmpresaId);
 
             modelBuilder.Entity<Guia>(entity =>
             {

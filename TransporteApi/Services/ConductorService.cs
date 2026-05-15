@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Dto;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -13,28 +14,28 @@ namespace TransporteApi.Services
         {
         }
 
-        public override async Task<IEnumerable<ConductorDto>> GetAllAsync()
+        public override async Task<IEnumerable<ConductorDto>> GetAllAsync(int idempresa = 0)
         {
-            var entities = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).ToListAsync();
+            var entities = await _appDbContext.Conductores.Where(x => x.EmpresaId == idempresa).Include(x => x.Propietario).Include(x => x.Camion).ToListAsync();
             return _mapper.Map<IEnumerable<ConductorDto>>(entities);
         }
 
-        public virtual async Task<ConductorDto> GetByCedulaAsync(string cedula)
+        public virtual async Task<ConductorDto> GetByCedulaAsync(string cedula, int idempresa)
         {
-            var entity = await _appDbContext.Conductores.FirstOrDefaultAsync(p => p.Cedula == cedula);
+            var entity = await _appDbContext.Conductores.FirstOrDefaultAsync(p => p.Cedula == cedula && p.EmpresaId == idempresa);
             return _mapper.Map<ConductorDto>(entity);
         }
 
-        public virtual async Task<ConductorDto> GetByIdAsync(int id)
+        public virtual async Task<ConductorDto> GetByIdAsync(int id, int idempresa)
         {
-            var entity = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).Where(x => x.Id == id).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Conductores.Include(x => x.Propietario).Include(x => x.Camion).Where(x => x.Id == id && x.EmpresaId == idempresa).FirstOrDefaultAsync();
             return _mapper.Map<ConductorDto>(entity);
         }
 
-        public virtual async Task<ConductorDto> GetByNombreAsync(string nombre)
+        public virtual async Task<ConductorDto> GetByNombreAsync(string nombre, int idempresa)
         {
             var entity = await _appDbContext.Conductores.FirstOrDefaultAsync(x =>
-        (x.Nombre + " " + x.Apellido).Contains(nombre));
+        (x.Nombre + " " + x.Apellido).Contains(nombre) && x.EmpresaId == idempresa);
 
             return _mapper.Map<ConductorDto>(entity);
         }

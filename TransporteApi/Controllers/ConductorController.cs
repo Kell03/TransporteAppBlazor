@@ -33,14 +33,16 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<ConductorDto> lista = await _service.GetAllAsync();
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<ConductorDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            ConductorDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            ConductorDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -49,8 +51,9 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 Conductor item = _mapper.Map<Conductor>(itemDto);
-
+                item.EmpresaId = empresaId;
                 item.Created_at = DateTime.Now;
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
@@ -94,7 +97,7 @@ namespace TransporteApi.Controllers
             {
                 var resultado = new UploadResultDto();
 
-
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 if (file == null || file.Length == 0)
                 {
                     resultado.Message = "No se ha seleccionado ningún archivo";
@@ -176,7 +179,7 @@ namespace TransporteApi.Controllers
                         }
 
 
-                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario);
+                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario, empresaId);
 
                         if (propietario == null)
                         {
@@ -184,14 +187,14 @@ namespace TransporteApi.Controllers
                             continue;
                         }
 
-                        var camion = await _camionService.GetByPlacaAsync(placa1);
+                        var camion = await _camionService.GetByPlacaAsync(placa1, empresaId);
                         if (camion == null)
                         {
                             resultado.Errores.Add($"Camion no encontrado se pasa a la siguiente fila");
                             continue;
                         }
 
-                        var getProperty = await _service.GetByCedulaAsync(cedula);
+                        var getProperty = await _service.GetByCedulaAsync(cedula, empresaId);
                         if (getProperty != null)
                         {
                             resultado.Errores.Add($"Conductor ya existe se pasa a la siguiente fila");
@@ -215,6 +218,7 @@ namespace TransporteApi.Controllers
                         Conductor item = _mapper.Map<Conductor>(itemDto);
                         item.Fecha_alta = DateTime.Now;
                         item.Created_at = DateTime.Now;
+                        item.EmpresaId = empresaId;
                         itemDto = await _service.CreateAsync(item);
 
                         resultado.RegistrosValidos++;

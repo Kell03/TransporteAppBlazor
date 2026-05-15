@@ -12,23 +12,23 @@ namespace TransporteApi.Services
         }
 
 
-        public override async Task<IEnumerable<CamionDto>> GetAllAsync()
+        public override async Task<IEnumerable<CamionDto>> GetAllAsync(int idempresa = 0)
         {
-            var entities = await _appDbContext.Camiones.Include(x => x.Propietario).ToListAsync();
+            var entities = await _appDbContext.Camiones.Include(x => x.Propietario).Where(x => x.EmpresaId == idempresa).ToListAsync();
             return _mapper.Map<IEnumerable<CamionDto>>(entities);
         }
 
 
 
-        public virtual async Task<CamionDto> GetByIdAsync(int id)
+        public virtual async Task<CamionDto> GetByIdAsync(int id, int idempresa = 0)
         {
-            var entity = await _appDbContext.Camiones.Include(x => x.Propietario).Where(x => x.Id == id).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Camiones.Include(x => x.Propietario).Where(x => x.Id == id && x.EmpresaId == idempresa).FirstOrDefaultAsync();
             return _mapper.Map<CamionDto>(entity);
         }
 
-        public virtual async Task<CamionDto> GetByPlacaAsync(string placa)
+        public virtual async Task<CamionDto> GetByPlacaAsync(string placa, int idempresa = 0)
         {
-            var entity = await _appDbContext.Camiones.FirstOrDefaultAsync(p => p.Placa1 == placa);
+            var entity = await _appDbContext.Camiones.FirstOrDefaultAsync(p => p.Placa1 == placa && p.EmpresaId == idempresa);
             return _mapper.Map<CamionDto>(entity);
         }
 

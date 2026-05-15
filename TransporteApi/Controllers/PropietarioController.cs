@@ -30,14 +30,16 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<PropietarioDto> lista = await _service.GetAllAsync();
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<PropietarioDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            PropietarioDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            PropietarioDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -46,8 +48,9 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 Propietario item = _mapper.Map<Propietario>(itemDto);
-
+                item.EmpresaId = empresaId;
                 item.Created_at = DateTime.Now;
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
@@ -90,6 +93,7 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 var resultado = new UploadResultDto();
 
 
@@ -158,10 +162,11 @@ namespace TransporteApi.Controllers
                         {
                             Nombre = nombre,
                             Codigo = codigo,
+                            EmpresaId = empresaId,
                             Created_at = DateTime.Now
                         };
 
-                        var getProperty = await _service.GetByCodigoAsync(codigo);
+                        var getProperty = await _service.GetByCodigoAsync(codigo, Convert.ToInt32(User.FindFirst("EmpresaId")?.Value));
                         if (getProperty != null)
                         {
                             resultado.Errores.Add($"Propietario ya existe se pasa a la siguiente fila");

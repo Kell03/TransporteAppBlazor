@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Domain.Dto
@@ -15,7 +16,9 @@ namespace Domain.Dto
         [NotMapped]
         public string? Token { get; set; } = string.Empty;
         public int RolId { get; set; }
+        public int? EmpresaId { get; set; } 
 
+        public Empresa? Empresa { get; set; }
         public Rol Rol { get; set; }
 
         public DateTime Created_at { get; set; }

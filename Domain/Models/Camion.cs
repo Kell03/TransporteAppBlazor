@@ -16,6 +16,8 @@ namespace Domain.Dto
         public string Estado { get; set; }
         public int Propietario_Id { get; set; }
 
+        public int? EmpresaId { get; set; }
+
         [JsonIgnore]
         public Propietario Propietario { get; set; }
 

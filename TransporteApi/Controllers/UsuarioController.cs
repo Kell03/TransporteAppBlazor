@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Generators;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection.Metadata;
+using System.Security.Claims;
 using System.Text;
 using TransporteApi.Models;
 using TransporteApi.Services;
@@ -34,14 +35,16 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<UsuarioDto> lista = await _service.GetAllAsync();
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<UsuarioDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            UsuarioDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            UsuarioDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -50,6 +53,7 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 Usuario item = _mapper.Map<Usuario>(itemDto);
                 item.Password = itemDto.Password;
                 item.PasswordHash = BCrypt.Net.BCrypt.HashPassword(itemDto.Password);
@@ -59,6 +63,7 @@ namespace TransporteApi.Controllers
                 item.Password = null; // Si tienes campo Password
 
                 item.Created_at = DateTime.Now;
+                item.EmpresaId = empresaId; // Asignar el EmpresaId del usuario autenticado
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
             }
@@ -131,6 +136,9 @@ namespace TransporteApi.Controllers
 
             if (passwordValida)
             {
+                loginDto.Id = resultado.Id;
+                loginDto.EmpresaId = resultado.EmpresaId;
+                loginDto.RolId = resultado.RolId;
                 var tokenString = GenerateJSONWebToken(loginDto);
                 resultadoDto.Token = tokenString;
             }
@@ -151,11 +159,23 @@ namespace TransporteApi.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+            // 🔑 IMPORTANTE: Crear los claims del usuario
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, userInfo.Email),           // Para User.Identity.Name
+        new Claim(ClaimTypes.NameIdentifier, userInfo.Id.ToString()), // Para User.FindFirst(ClaimTypes.NameIdentifier)
+        new Claim("Id", userInfo.Id.ToString()),              // Claim personalizado
+        new Claim("Email", userInfo.Email),                   // Claim personalizado
+        new Claim("EmpresaId", userInfo.EmpresaId?.ToString() ?? "") // Si el usuario tiene empresa
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Issuer"],
+                claims: claims,  // 🔑 Aquí van los claims
+                expires: DateTime.Now.AddMinutes(120),
+                signingCredentials: credentials
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

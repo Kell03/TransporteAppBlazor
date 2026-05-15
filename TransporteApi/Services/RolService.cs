@@ -25,7 +25,7 @@ namespace TransporteApi.Services
             return _mapper.Map<RolDto>(entity);
         }
 
-        public override async Task<IEnumerable<RolDto>> GetAllAsync()
+        public override async Task<IEnumerable<RolDto>> GetAllAsync(int idempresa = 0)
         {
             var entities = await _appDbContext.Roles.Include(x => x.RolesPermisos).ToListAsync();
             return _mapper.Map<IEnumerable<RolDto>>(entities);

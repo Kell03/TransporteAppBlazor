@@ -28,14 +28,17 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<CamionDto> lista = await _service.GetAllAsync();
+
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<CamionDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            CamionDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            CamionDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -44,8 +47,10 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 Camion item = _mapper.Map<Camion>(itemDto);
                 item.Created_at = DateTime.Now;
+                item.EmpresaId = empresaId;
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
             }
@@ -62,6 +67,7 @@ namespace TransporteApi.Controllers
         {
             if (id != itemDto.Id)
                 return BadRequest();
+
 
             // 1. Obtener la entidad EXISTENTE de la BD
             Camion itemExistente = await _service.FindAsync(id);
@@ -173,7 +179,7 @@ namespace TransporteApi.Controllers
                         var marca = worksheet.Cell(row, 4).GetString()?.Trim();
                         var modelo = worksheet.Cell(row, 5).GetString()?.Trim();
 
-                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario);
+                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario, Convert.ToInt32(User.FindFirst("EmpresaId")?.Value));
 
                         if (propietario == null)
                         {
@@ -200,6 +206,7 @@ namespace TransporteApi.Controllers
 
                         Camion item = _mapper.Map<Camion>(itemDto);
                         item.Created_at = DateTime.Now;
+                        item.EmpresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                         itemDto = await _service.CreateAsync(item);
 
                         resultado.RegistrosValidos++;

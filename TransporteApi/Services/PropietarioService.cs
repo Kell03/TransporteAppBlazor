@@ -11,9 +11,9 @@ namespace TransporteApi.Services
         {
         }
 
-        public virtual async Task<PropietarioDto> GetByCodigoAsync(string codigo)
+        public virtual async Task<PropietarioDto> GetByCodigoAsync(string codigo, int idempresa)
         {
-            var entity = await _appDbContext.Propietario.FirstOrDefaultAsync(p => p.Codigo == codigo);
+            var entity = await _appDbContext.Propietario.FirstOrDefaultAsync(p => p.Codigo == codigo && p.EmpresaId == idempresa);
             return _mapper.Map<PropietarioDto>(entity);
         }
     }

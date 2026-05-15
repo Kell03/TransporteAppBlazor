@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Domain.Dto;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using TransporteApi.Models;
 
 namespace TransporteApi.Services
@@ -11,7 +12,7 @@ namespace TransporteApi.Services
         {
         }
 
-        public override async Task<IEnumerable<GuiaDto>> GetAllAsync()
+        public override async Task<IEnumerable<GuiaDto>> GetAllAsync(int idempresa = 0)
         {
             var entities = await _appDbContext.Guias
                 .Include(x => x.Conductor)
@@ -19,20 +20,21 @@ namespace TransporteApi.Services
                    .ThenInclude(c => c.Propietario)
                 .Include(x => x.Origen)
                 .Include(x => x.Destino)
+                .Where(x => x.EmpresaId == idempresa)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<GuiaDto>>(entities);
         }
 
-        public virtual async Task<GuiaDto> GetByIdAsync(int id)
+        public virtual async Task<GuiaDto> GetByIdAsync(int id, int idempresa )
         {
-            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Id == id).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Id == id).Where(x => x.EmpresaId == idempresa).FirstOrDefaultAsync();
             return _mapper.Map<GuiaDto>(entity);
         }
 
 
-        public virtual async Task<GuiaDto> GetByNumeroAsync(string numero)
+        public virtual async Task<GuiaDto> GetByNumeroAsync(string numero, int idempresa)
         {
-            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Numero_guia == numero).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Guias.Where(x => x.EmpresaId == idempresa).Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Numero_guia == numero).FirstOrDefaultAsync();
             return _mapper.Map<GuiaDto>(entity);
         }
 

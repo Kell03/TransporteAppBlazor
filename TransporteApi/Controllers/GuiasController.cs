@@ -39,14 +39,16 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<GuiaDto> lista = await _service.GetAllAsync();
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<GuiaDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            GuiaDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            GuiaDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -55,8 +57,9 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 Guia item = _mapper.Map<Guia>(itemDto);
-
+                item.EmpresaId = empresaId;
                 item.Created_at = DateTime.Now;
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
@@ -103,6 +106,8 @@ namespace TransporteApi.Controllers
         {
             try
             {
+
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 var resultado = new UploadResultDto();
 
 
@@ -222,7 +227,7 @@ namespace TransporteApi.Controllers
                         }
 
 
-                        var guia = await _service.GetByNumeroAsync(nroGuia);
+                        var guia = await _service.GetByNumeroAsync(nroGuia, empresaId);
 
                         if (guia != null)
                         {
@@ -230,7 +235,7 @@ namespace TransporteApi.Controllers
                             continue;
                         }
 
-                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario);
+                        var propietario = await _propietarioService.GetByCodigoAsync(codigoPropietario, empresaId);
 
                         if (propietario == null)
                         {
@@ -238,14 +243,14 @@ namespace TransporteApi.Controllers
                             continue;
                         }
 
-                        var camion = await _camionService.GetByPlacaAsync(placa);
+                        var camion = await _camionService.GetByPlacaAsync(placa, empresaId);
                         if (camion == null)
                         {
                             resultado.Errores.Add($"Fila {row}: Camion no encontrado ");
                             continue;
                         }
 
-                        var chofer = await _conductorservice.GetByNombreAsync(conductor);
+                        var chofer = await _conductorservice.GetByNombreAsync(conductor, empresaId);
                         if (chofer == null)
                         {
                             resultado.Errores.Add($"Fila {row}: Conductor no encontrado ");
@@ -277,6 +282,7 @@ namespace TransporteApi.Controllers
                             camion_id = camion.Id,
                             Fecha = fecha,
                             Created_at = DateTime.Now,
+                            EmpresaId = empresaId
                         };
 
 
@@ -306,8 +312,8 @@ namespace TransporteApi.Controllers
         [HttpPost("export/excel")]
         public async Task<IActionResult> ExportarGuiasExcel([FromBody] ExportRequest exportRequest)
         {
-           
 
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
             // Cargar guías con sus relaciones
             var guiasQuery = await _service.GetAllAsync();
 
@@ -316,6 +322,7 @@ namespace TransporteApi.Controllers
             {
                 var searchString = exportRequest.SearchString;
                 guiasQuery = guiasQuery.Where(x =>
+                    x.EmpresaId == empresaId &&
                     x.Numero_guia.Contains(searchString) ||
                     x.Conductor.Nombre.Contains(searchString) ||
                     x.Conductor.Apellido.Contains(searchString) ||

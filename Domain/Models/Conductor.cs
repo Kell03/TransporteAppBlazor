@@ -24,5 +24,7 @@ namespace Domain.Dto
         public DateTime? Updated_at { get; set; }
 
         public string NombreCompleto => $"{Nombre} {Apellido}".Trim();
+
+        public int? EmpresaId { get; set; }
     }
 }

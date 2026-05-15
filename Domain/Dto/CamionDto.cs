@@ -16,6 +16,7 @@ namespace Domain.Dto
         public string Color { get; set; } = string.Empty;
         public string Estado { get; set; } = "Activo";
 
+        public int? EmpresaId { get; set; }
         public int Propietario_Id { get; set; }
         
         [NotMapped]

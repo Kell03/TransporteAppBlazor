@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Dto;
+using Domain.Models;
 using TransporteApi.Models;
 
 namespace TransporteApi.Mappers
@@ -15,6 +16,10 @@ namespace TransporteApi.Mappers
                 .ReverseMap();
 
             CreateMap<CentroDistribucion, CentroDistribucionDto>()
+               .ReverseMap();
+
+
+            CreateMap<Empresa, EmpresaDto>()
                .ReverseMap();
 
 

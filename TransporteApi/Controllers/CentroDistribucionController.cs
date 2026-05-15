@@ -28,14 +28,16 @@ namespace TransporteApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<CentroDistribucionDto> lista = await _service.GetAllAsync();
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            IEnumerable<CentroDistribucionDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            CentroDistribucionDto item = await _service.GetByIdAsync(id);
+            int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+            CentroDistribucionDto item = await _service.GetByIdAsync(id, empresaId);
             return Ok(item);
         }
 
@@ -44,8 +46,9 @@ namespace TransporteApi.Controllers
         {
             try
             {
+                int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                 CentroDistribucion item = _mapper.Map<CentroDistribucion>(itemDto);
-
+                item.EmpresaId = empresaId;
                 itemDto = await _service.CreateAsync(item);
                 return Ok(itemDto);
             }
@@ -164,7 +167,7 @@ namespace TransporteApi.Controllers
                         }
 
                         CentroDistribucion item = _mapper.Map<CentroDistribucion>(itemDto);
-
+                        item.EmpresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
                         itemDto = await _service.CreateAsync(item);
 
                         resultado.RegistrosValidos++;

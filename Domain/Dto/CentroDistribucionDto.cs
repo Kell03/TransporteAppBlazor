@@ -7,5 +7,7 @@
         public string Nombre { get; set; }
         public string Codigo { get; set; }
         public bool Status { get; set; }
+
+        public int? EmpresaId { get; set; }
     }
 }
