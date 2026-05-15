@@ -183,7 +183,7 @@ namespace TransporteApi.Controllers
 
                         if (propietario == null)
                         {
-                            resultado.Errores.Add($"Propietario no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Propietario no encontrado se pasa a la siguiente fila");
                             continue;
                         }
 
@@ -200,7 +200,7 @@ namespace TransporteApi.Controllers
                         var getProperty = await _service.GetByPlacaAsync(placa1);
                         if (getProperty != null)
                         {
-                            resultado.Errores.Add($"Camion ya existe se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Camion ya existe se pasa a la siguiente fila");
                             continue;
                         }
 

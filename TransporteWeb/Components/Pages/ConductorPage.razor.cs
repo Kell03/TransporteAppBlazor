@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
@@ -165,7 +166,9 @@ namespace TransporteWeb.Components.Pages
                 }
                 else
                 {
-                    Snackbar.Add("Error al cargar conductores", Severity.Error);
+                    var erroresHtml = string.Join("", resultado.Errores.Select(e => $"<li>{e}</li>"));
+                    var mensaje = (MarkupString)$"<ul>{erroresHtml}</ul>";
+                    Snackbar.Add(mensaje, Severity.Error);
                     await OnInitializedAsync();
                 }
             }

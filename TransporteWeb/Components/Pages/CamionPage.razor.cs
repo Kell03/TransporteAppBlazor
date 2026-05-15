@@ -1,6 +1,8 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using static MudBlazor.CategoryTypes;
 
 namespace TransporteWeb.Components.Pages
 {
@@ -84,6 +86,7 @@ namespace TransporteWeb.Components.Pages
 
 
                 var saveRol = (_item.Id == 0) ? await CamionService.SaveAsync(_item) : await CamionService.UpdateAsync(_item);
+
                 if (saveRol != null)
                 {
                     Snackbar.Add("Submitted!", Severity.Success);
@@ -92,6 +95,8 @@ namespace TransporteWeb.Components.Pages
                 }
                 else
                 {
+
+
                     Snackbar.Add("Error submitting the camion.", Severity.Error);
                 }
 
@@ -140,7 +145,10 @@ namespace TransporteWeb.Components.Pages
                 }
                 else
                 {
-                    Snackbar.Add("Error al cargar camiones", Severity.Error);
+
+                     var erroresHtml = string.Join("", resultado.Errores.Select(e => $"<li>{e}</li>"));
+                    var mensaje = (MarkupString)$"<ul>{erroresHtml}</ul>";
+                    Snackbar.Add(mensaje, Severity.Error);
                     await OnInitializedAsync();
                 }
             }

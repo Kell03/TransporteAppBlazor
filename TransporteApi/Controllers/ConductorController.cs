@@ -183,21 +183,21 @@ namespace TransporteApi.Controllers
 
                         if (propietario == null)
                         {
-                            resultado.Errores.Add($"Propietario no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Propietario no encontrado se pasa a la siguiente fila");
                             continue;
                         }
 
                         var camion = await _camionService.GetByPlacaAsync(placa1, empresaId);
                         if (camion == null)
                         {
-                            resultado.Errores.Add($"Camion no encontrado se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Camion no encontrado se pasa a la siguiente fila");
                             continue;
                         }
 
                         var getProperty = await _service.GetByCedulaAsync(cedula, empresaId);
                         if (getProperty != null)
                         {
-                            resultado.Errores.Add($"Conductor ya existe se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Conductor ya existe se pasa a la siguiente fila");
                             continue;
                         }
 

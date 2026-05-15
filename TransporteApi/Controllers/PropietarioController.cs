@@ -169,7 +169,7 @@ namespace TransporteApi.Controllers
                         var getProperty = await _service.GetByCodigoAsync(codigo, Convert.ToInt32(User.FindFirst("EmpresaId")?.Value));
                         if (getProperty != null)
                         {
-                            resultado.Errores.Add($"Propietario ya existe se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Propietario ya existe se pasa a la siguiente fila");
                             continue;
                         }
 

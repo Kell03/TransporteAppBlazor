@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.JSInterop;
@@ -240,12 +241,9 @@ namespace TransporteWeb.Components.Pages
                 else
                 {
 
-                    var errores = resultado.Errores;
-                    string mensajeErrores = string.Join("\n", errores);
-                    Snackbar.Add($"Error al cargar guias:\n{mensajeErrores}", Severity.Error, config =>
-                    {
-                        config.VisibleStateDuration = 5000;
-                    });
+                    var erroresHtml = string.Join("", resultado.Errores.Select(e => $"<li>{e}</li>"));
+                    var mensaje = (MarkupString)$"<ul>{erroresHtml}</ul>";
+                    Snackbar.Add(mensaje, Severity.Error);
                     await OnInitializedAsync();
                 }
             }

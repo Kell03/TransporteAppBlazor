@@ -162,7 +162,7 @@ namespace TransporteApi.Controllers
                         var getProperty = await _service.GetByCodigoAsync(codigo);
                         if (getProperty != null)
                         {
-                            resultado.Errores.Add($"Centro ya existe se pasa a la siguiente fila");
+                            resultado.Errores.Add($"Fila {row}: Centro ya existe se pasa a la siguiente fila");
                             continue;
                         }
 

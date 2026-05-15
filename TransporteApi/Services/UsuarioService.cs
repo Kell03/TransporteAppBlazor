@@ -13,7 +13,7 @@ namespace TransporteApi.Services
 
         public override async Task<IEnumerable<UsuarioDto>> GetAllAsync(int idempresa = 0)
         {
-            var entities = await _appDbContext.Usuarios.Include(x => x.Rol).Include(x => x.Empresa).ToListAsync();
+            var entities = await _appDbContext.Usuarios.Include(x => x.Rol).Include(x => x.Empresa).Where(x => x.EmpresaId == idempresa).ToListAsync();
             return _mapper.Map<IEnumerable<UsuarioDto>>(entities);
         }
 
