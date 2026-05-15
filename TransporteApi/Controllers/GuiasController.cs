@@ -315,23 +315,23 @@ namespace TransporteApi.Controllers
 
             int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
             // Cargar guías con sus relaciones
-            var guiasQuery = await _service.GetAllAsync();
+            var guiasQuery = await _service.GetAllAsync(empresaId);
 
             // Aplicar QuickFilter si existe
             if (!string.IsNullOrWhiteSpace(exportRequest?.SearchString))
             {
-                var searchString = exportRequest.SearchString;
+                var searchString = exportRequest.SearchString.ToLower(); // ← Convertido UNA vez
+
                 guiasQuery = guiasQuery.Where(x =>
-                    x.EmpresaId == empresaId &&
-                    x.Numero_guia.Contains(searchString) ||
-                    x.Conductor.Nombre.Contains(searchString) ||
-                    x.Conductor.Apellido.Contains(searchString) ||
-                    x.Conductor.NombreCompleto.Contains(searchString) ||
-                    x.Tipo.Contains(searchString) ||
-                    x.Status.Contains(searchString) ||
-                    (x.Descripcion != null && x.Descripcion.Contains(searchString)) || // ← Así
-                    x.Origen.Nombre.Contains(searchString) ||
-                    x.Destino.Nombre.Contains(searchString));
+                    x.Numero_guia.ToLower().Contains(searchString) ||           // ← Campo convertido
+                    x.Conductor.Nombre.ToLower().Contains(searchString) ||      // ← Campo convertido
+                    x.Conductor.Apellido.ToLower().Contains(searchString) ||    // ← Campo convertido
+                    x.Conductor.NombreCompleto.ToLower().Contains(searchString) ||
+                    x.Tipo.ToLower().Contains(searchString) ||
+                    x.Status.ToLower().Contains(searchString) ||
+                    (x.Descripcion != null && x.Descripcion.ToLower().Contains(searchString)) ||
+                    x.Origen.Nombre.ToLower().Contains(searchString) ||
+                    x.Destino.Nombre.ToLower().Contains(searchString));
             }
 
             // Aplicar filtros específicos desde FilterDefinitions
