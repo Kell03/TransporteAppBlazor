@@ -232,20 +232,46 @@ namespace TransporteWeb.Components.Pages
                 // Llamar al servicio
                 resultado = await GuiaService.UploadExcelAsync(stream, selectedFile.Name);
 
-                // Mostrar mensaje al usuario
-                if (resultado != null && resultado.RegistrosValidos > 0)
-                {
-                    Snackbar.Add("Guias cargadas correctamente", Severity.Success);
-                    await OnInitializedAsync();
-                }
-                else
-                {
 
-                    var erroresHtml = string.Join("", resultado.Errores.Select(e => $"<li>{e}</li>"));
-                    var mensaje = (MarkupString)$"<ul>{erroresHtml}</ul>";
-                    Snackbar.Add(mensaje, Severity.Error);
-                    await OnInitializedAsync();
+                if (resultado != null)
+                {
+                    // Mostrar resumen combinado
+                    if (resultado.RegistrosValidos > 0 && resultado.Errores.Count > 0)
+                    {
+                        Snackbar.Add($"{resultado.RegistrosValidos} válidas. ❌ {resultado.Errores.Count} errores", Severity.Warning);
+
+                        // Crear los parámetros para el diálogo
+                        var parametros = new DialogParameters();
+                        parametros.Add("Errores", resultado.Errores);
+
+                        // 👇 USAR ShowAsync en lugar de Show
+                        var dialog = await DialogService.ShowAsync<DialogoErrores>("Detalle de errores", parametros);
+                        var result = await dialog.Result;
+
+                        await OnInitializedAsync();
+                    }
+                    else if (resultado.RegistrosValidos > 0)
+                    {
+                        // Caso: Solo válidos, sin errores
+                        Snackbar.Add($"{resultado.RegistrosValidos} guías cargadas correctamente", Severity.Success);
+                        await OnInitializedAsync();
+                    }
+                    else
+                    {
+                        Snackbar.Add($"❌ {resultado.Errores.Count} errores", Severity.Warning);
+
+                        // Crear los parámetros para el diálogo
+                        var parametros = new DialogParameters();
+                        parametros.Add("Errores", resultado.Errores);
+
+                        // 👇 USAR ShowAsync en lugar de Show
+                        var dialog = await DialogService.ShowAsync<DialogoErrores>("Detalle de errores", parametros);
+                        var result = await dialog.Result;
+
+                    }
                 }
+
+
             }
             catch (Exception ex)
             {

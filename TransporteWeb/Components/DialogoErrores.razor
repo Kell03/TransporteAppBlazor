@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Components
+@using MudBlazor
+@using MudBlazor.Services
+
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">❌ Detalle de Errores</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer MaxHeight="400px" Style="overflow-y: auto;">
+            <MudList T="string">
+                @foreach (var error in Errores)
+                {
+                    <MudListItem T="string">
+                        <MudText Color="Color.Error">• @error</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Cerrar">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public List<string> Errores { get; set; } = new();
+    
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;  // ✅ Usar la interfaz
+    
+    private void Cerrar()
+    {
+        MudDialog.Close(DialogResult.Ok<object>(null));  // ✅ Usar MudDialog, no DialogService
+    }
+}

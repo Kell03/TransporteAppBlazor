@@ -2,9 +2,12 @@
 @using System.ComponentModel.DataAnnotations
 @using Domain.Dto
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using TransporteWeb.Repository.Interfaz
 @inject ISnackbar Snackbar
 @inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> CentroDistribucionService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @attribute [Authorize]
 @page "/centrodistribucion"
 <h3>Centros de Distribución</h3>
@@ -109,6 +112,11 @@
                                 
                         <MudTextField T="string" @bind-Value="_item.Nombre" Label="Nombre" Required="true" RequiredError="Nombre es requerido!" Class="mt-3" />
                         <MudTextField T="string" @bind-Value="_item.Codigo" Label="Código" Required="true" RequiredError="Código es requerido!" Class="mt-3" />
+                        @if (empresaId == 2)
+                        {
+                            <MudTextField T="int?" @bind-Value="_item.Kilometraje" Label="Kilometraje"  Class="mt-3" />
+                        }
+                       
               
                        
     

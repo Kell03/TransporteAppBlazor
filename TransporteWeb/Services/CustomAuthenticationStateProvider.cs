@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using TransporteWeb.Contracts;
 
 namespace TransporteWeb.Services
 {
@@ -32,12 +33,15 @@ namespace TransporteWeb.Services
             return new AuthenticationState(user);
         }
 
-        public async Task AuthenticateUser(string token)
+        public async Task AuthenticateUser(AuthResponse response)
         {
-            await _sessionStorageService.SetItemAsync("token", token);
+            await _sessionStorageService.SetItemAsync("token", response.Token);
+            await _sessionStorageService.SetItemAsync("empresaId", response.EmpresaId); // Guardar EmpresaId
+            await _sessionStorageService.SetItemAsync("rolId", response.RolId); // Guardar RolId
+            await _sessionStorageService.SetItemAsync("UserId", response.Id); // Guardar UserId
 
             var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadJwtToken(token);
+            var jsonToken = handler.ReadJwtToken(response.Token);
             var identity = new ClaimsIdentity(jsonToken.Claims, "jwt");
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);

@@ -18,6 +18,7 @@ namespace TransporteWeb.Components.Pages
         private IBrowserFile? selectedFile;
         private bool isLoading = false;
         private UploadResultDto? resultado;
+        private int? empresaId;
 
         private string _searchString;
 
@@ -30,6 +31,9 @@ namespace TransporteWeb.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            empresaId = Convert.ToInt32(user.FindFirst("EmpresaId")?.Value);
             await GetData();
         }
 

@@ -58,7 +58,7 @@
             {
                 
                 await SessionStorage.SetItemAsync("token", authResponse.Token);
-                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(authResponse.Token!);
+                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(authResponse!);
                 NavigationManager.NavigateTo("/");
             }
             catch (Exception ex)
