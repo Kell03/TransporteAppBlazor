@@ -24,10 +24,19 @@ namespace TransporteApi.Services
         }
 
 
+        public virtual void ClearContext()
+        {
+            _appDbContext.ChangeTracker.Clear();
+        }
+
         public virtual async Task<TDto> CreateAsync(T entity)
         {
             try
             {
+                // Limpiar todas las entidades rastreadas del DbContext
+                _appDbContext.ChangeTracker.Clear();
+
+
                 await _dbSet.AddAsync(entity);
                 await _appDbContext.SaveChangesAsync();
                 return _mapper.Map<TDto>(entity);

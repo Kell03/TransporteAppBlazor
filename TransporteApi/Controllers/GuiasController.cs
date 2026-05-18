@@ -294,7 +294,15 @@ namespace TransporteApi.Controllers
                     }
                     catch (Exception ex)
                     {
-                        resultado.Errores.Add($"Fila {row}: Error - {ex.Message}");
+
+                        bool esDuplicado = ex.Message.Contains("Duplicate") ||
+                                           (ex.InnerException != null && ex.InnerException.Message.Contains("Duplicate"));
+
+                        if (!esDuplicado)
+                        {
+                            resultado.Errores.Add($"Fila {row}: Error - {ex.Message}");
+                        }
+                        
                     }
                 }
 
@@ -367,6 +375,12 @@ namespace TransporteApi.Controllers
                 "Status",
             };
 
+                if(empresaId == 2)
+                {
+                    headers = headers.Append("Recorrido KM Ida").ToArray();
+                    headers = headers.Append("Recorrido KM Vuelta").ToArray();
+                }
+
                 // Estilo de encabezados
                 for (int i = 0; i < headers.Length; i++)
                 {
@@ -386,11 +400,27 @@ namespace TransporteApi.Controllers
                     worksheet.Cell(row, 2).Value = guia.Camion?.Placa1 ?? "Sin asignar";
                     worksheet.Cell(row, 3).Value = guia.Camion?.Propietario?.Codigo ?? "Sin asignar";
                     worksheet.Cell(row, 4).Value = guia.Numero_guia;
-                    worksheet.Cell(row, 5).Value = guia.Origen?.Codigo ?? "Sin definir";
-                    worksheet.Cell(row, 6).Value = guia.Destino?.Codigo ?? "Sin definir";
+                    if (empresaId == 2)
+                    {
+
+                        worksheet.Cell(row, 5).Value = $"{guia.Origen?.Codigo}-{guia.Origen?.Nombre}" ?? "Sin definir";
+                        worksheet.Cell(row, 6).Value = $"{guia.Destino?.Codigo}-{guia.Destino?.Nombre}" ?? "Sin definir";
+                    }
+                    else
+                    {
+                        worksheet.Cell(row, 5).Value = guia.Origen?.Codigo ?? "Sin definir";
+                        worksheet.Cell(row, 6).Value = guia.Destino?.Codigo ?? "Sin definir";
+
+                    }
                     worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy HH:mm");
                     worksheet.Cell(row, 8).Value = guia.Tipo;
                     worksheet.Cell(row, 9).Value = guia.Status;
+                    if (empresaId == 2)
+                    {
+                        worksheet.Cell(row, 10).Value = guia.Destino?.Kilometraje;
+                        worksheet.Cell(row, 11).Value = guia.Destino?.Kilometraje;
+
+                    }
                     row++;
                 }
 

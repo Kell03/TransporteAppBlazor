@@ -9,5 +9,7 @@
         public bool Status { get; set; }
 
         public int? EmpresaId { get; set; }
+
+        public int? Kilometraje { get; set; }
     }
 }

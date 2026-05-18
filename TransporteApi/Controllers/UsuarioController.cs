@@ -140,6 +140,9 @@ namespace TransporteApi.Controllers
                 loginDto.EmpresaId = resultado.EmpresaId;
                 loginDto.RolId = resultado.RolId;
                 var tokenString = GenerateJSONWebToken(loginDto);
+                resultadoDto.EmpresaId = loginDto.EmpresaId;
+                resultadoDto.RolId = loginDto.RolId;
+                resultadoDto.Id = loginDto.Id;
                 resultadoDto.Token = tokenString;
             }
 

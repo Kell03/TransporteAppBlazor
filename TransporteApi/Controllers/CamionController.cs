@@ -213,7 +213,15 @@ namespace TransporteApi.Controllers
                     }
                     catch (Exception ex)
                     {
-                        resultado.Errores.Add($"Fila {row}: Error - {ex.Message}");
+
+                        bool esDuplicado = ex.Message.Contains("Duplicate") ||
+                                           (ex.InnerException != null && ex.InnerException.Message.Contains("Duplicate"));
+
+                        if (!esDuplicado)
+                        {
+                            resultado.Errores.Add($"Fila {row}: Error - {ex.Message}");
+                        }
+
                     }
                 }
 
