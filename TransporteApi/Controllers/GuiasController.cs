@@ -412,7 +412,7 @@ namespace TransporteApi.Controllers
                         worksheet.Cell(row, 6).Value = guia.Destino?.Codigo ?? "Sin definir";
 
                     }
-                    worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy HH:mm");
+                    worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy");
                     worksheet.Cell(row, 8).Value = guia.Tipo;
                     worksheet.Cell(row, 9).Value = guia.Status;
                     if (empresaId == 2)
