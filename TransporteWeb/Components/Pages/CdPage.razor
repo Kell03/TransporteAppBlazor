@@ -81,6 +81,11 @@
                 <Columns>
                     <PropertyColumn Property="x => x.Nombre" Title="Nombre" />
                     <PropertyColumn Property="x => x.Codigo" Title="Código" />
+                    @if (empresaId == 2)
+                    {
+                        <PropertyColumn Property="x => x.Kilometraje" Title="Kilometraje" />
+                    }
+                       
 
                     <TemplateColumn CellClass="d-flex justify-end">
                         <CellTemplate>
