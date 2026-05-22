@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
 using Domain.Dto;
-using Domain.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using TransporteApi.Models;
+using System.Net;
+using System.Net.Mail;
 using TransporteApi.Services;
 
 namespace TransporteApi.Controllers
@@ -449,9 +447,156 @@ namespace TransporteApi.Controllers
             }
         }
 
+        [HttpGet("tarea-nocturna")]
+        [AllowAnonymous]
+        public async Task<IActionResult> TareaNocturna()
+        {
+            try
+            {
+                // 1. Validar si es el día y hora que quieres (ejemplo: viernes a las 11 PM)
+           //     var ahora = DateTime.Now;
+           //   // if (ahora.DayOfWeek != DayOfWeek.Friday || ahora.Hour != 23)
+           //   // {
+           //   //     return Ok(new { mensaje = "No es momento de ejecutar la tarea" });
+           //   // }
+           //
+           //     // 2. Obtener los datos (ejemplo: guías del día de ayer)
+           //     int empresaId = 2; // Obtén esto desde el token o configuración
+           //     var guias = await _service.GetAllAsync(empresaId);
+           //
+           //     // 3. Generar el Excel (usa tu método existente)
+           //     byte[] excelBytes = GenerarExcelGuias(guias, empresaId);
+           //
+           //     // 4. Configurar el correo
+           //     var cuerpoHtml = @"
+           // <html>
+           // <body>
+           //     <h1>Reporte de Guías</h1>
+           //     <p>Buenos días, adjunto el reporte de guías del día.</p>
+           //     <br/>
+           //     <p>Saludos,<br/>Sistema de Transporte</p>
+           // </body>
+           // </html>";
+           //
+           //     var nombreArchivo = $"Guias_{DateTime.Now:yyyyMMdd}.xlsx";
+           //
+           //     // 5. Configurar SMTP de Mailtrap
+           //     using (var smtpClient = new SmtpClient("smtp.mailtrap.io"))
+           //     {
+           //         smtpClient.Port = 2525;
+           //         smtpClient.Credentials = new NetworkCredential("api", "bca4603488512812e1fdab172d8aa8d6");
+           //         smtpClient.EnableSsl = true;
+           //
+           //         using (var mail = new MailMessage())
+           //         {
+           //             mail.From = new MailAddress("apontekelfran@gmail.com", "Sistema de Transporte");
+           //             mail.To.Add("kellbusiness0@gmail.com");
+           //             mail.Subject = $"Reporte de guías - {DateTime.Now:dd/MM/yyyy}";
+           //             mail.Body = cuerpoHtml;
+           //             mail.IsBodyHtml = true;
+           //
+           //             // Adjuntar el Excel
+           //             if (excelBytes != null && excelBytes.Length > 0)
+           //             {
+           //                 var stream = new MemoryStream(excelBytes);
+           //                 var attachment = new System.Net.Mail.Attachment(stream, nombreArchivo, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+           //                 mail.Attachments.Add(attachment);
+           //             }
+           //
+           //             await smtpClient.SendMailAsync(mail);
+           //         }
+           //     }
 
-     
-     }
+                return Ok(new { mensaje = "Correo enviado correctamente", fecha = DateTime.Now });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
+
+
+        private byte[] GenerarExcelGuias(IEnumerable<GuiaDto> guias, int empresaId)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Guias");
+
+                // Definir encabezados
+                var headers = new List<string>
+        {
+            "Chofer", "Placa", "Propietario", "N° Guía", "Origen", "Destino",
+            "Fecha", "Condicion", "Status"
+        };
+
+                if (empresaId == 2)
+                {
+                    headers.Add("Recorrido KM Ida");
+                    headers.Add("Recorrido KM Vuelta");
+                }
+
+                // Estilo de encabezados
+                for (int i = 0; i < headers.Count; i++)
+                {
+                    var cell = worksheet.Cell(1, i + 1);
+                    cell.Value = headers[i];
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                }
+
+                // Llenar datos
+                int row = 2;
+                foreach (var guia in guias)
+                {
+                    worksheet.Cell(row, 1).Value = guia.Conductor?.NombreCompleto ?? "Sin asignar";
+                    worksheet.Cell(row, 2).Value = guia.Camion?.Placa1 ?? "Sin asignar";
+                    worksheet.Cell(row, 3).Value = guia.Camion?.Propietario?.Codigo ?? "Sin asignar";
+                    worksheet.Cell(row, 4).Value = guia.Numero_guia;
+                    worksheet.Cell(row, 5).Value = guia.Origen?.Nombre ?? "Sin definir";
+                    worksheet.Cell(row, 6).Value = guia.Destino?.Nombre ?? "Sin definir";
+                    worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 8).Value = guia.Tipo;
+                    worksheet.Cell(row, 9).Value = guia.Status;
+
+                    if (empresaId == 2)
+                    {
+                        worksheet.Cell(row, 10).Value = guia.Destino?.Kilometraje ?? 0;
+                        worksheet.Cell(row, 11).Value = guia.Destino?.Kilometraje ?? 0;
+                    }
+                    row++;
+                }
+
+                // Ajustar columnas
+                worksheet.Columns().AdjustToContents();
+
+                var stream = new MemoryStream();
+                workbook.SaveAs(stream);
+                return stream.ToArray();
+            }
+        }
+
+       //private async Task EnviarCorreoConAdjunto(string destinatario, string asunto, string cuerpo, byte[] adjunto, string nombreArchivo)
+       //{
+       //
+       //   // bca4603488512812e1fdab172d8aa8d6
+       //    var apiKey = _configuration["SendGrid:ApiKey"];
+       //    var client = new SendGridClient(apiKey);
+       //
+       //    var from = new SendGrid.Helpers.Mail.EmailAddress("sistema@transportes.com", "Sistema de Transporte");
+       //    var to = new EmailAddress(destinatario);
+       //
+       //    var msg = MailHelper.CreateSingleEmail(from, to, asunto, cuerpo, cuerpo);
+       //    var archivoAdjunto = Convert.ToBase64String(adjunto);
+       //    msg.AddAttachment(nombreArchivo, archivoAdjunto);
+       //
+       //    await client.SendEmailAsync(msg);
+       //}
+
+
+
+    }
 
 
 
