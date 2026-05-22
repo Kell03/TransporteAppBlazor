@@ -126,7 +126,10 @@
                       
                     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
                                 
-                        <MudTextField T="string" @bind-Value="_item.Numero_guia" Label="Numero Guia" Required="true" RequiredError="Numero Guia es requerido!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Numero_guia" Label="Numero Guia" Required="true" OnBlur="@(async () => await ValidarNumeroGuia())"
+                                      Error="@_errorNumeroGuia"
+                                      ErrorText="@_errorNumeroGuiaText"
+                            RequiredError="Numero Guia es requerido!" Class="mt-3" />
 
                         <div class="mt-6">
                         

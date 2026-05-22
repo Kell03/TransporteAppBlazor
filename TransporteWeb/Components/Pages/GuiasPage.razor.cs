@@ -30,6 +30,9 @@ namespace TransporteWeb.Components.Pages
 
         private string _searchString;
 
+        private bool _errorNumeroGuia = false;
+        private string _errorNumeroGuiaText = "";
+
         private Task ActivateAsync(int index)
         {
             return _tabs.ActivatePanelAsync(index);
@@ -95,7 +98,7 @@ namespace TransporteWeb.Components.Pages
         {
             await _form.ValidateAsync();
 
-            if (_form.IsValid)
+            if (_form.IsValid && _errorNumeroGuia == false)
             {
 
                 _item.Fecha = _date.Value;
@@ -320,6 +323,23 @@ namespace TransporteWeb.Components.Pages
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        private async Task ValidarNumeroGuia()
+        {
+            _errorNumeroGuia = false;
+            _errorNumeroGuiaText = "";
+
+            if (!string.IsNullOrWhiteSpace(_item.Numero_guia))
+            {
+                bool existe = list.Any(x => x.Numero_guia == _item.Numero_guia);
+
+                if (existe)
+                {
+                    _errorNumeroGuia = true;
+                    _errorNumeroGuiaText = $"El número de guía {_item.Numero_guia} ya existe!";
+                }
             }
         }
     }
