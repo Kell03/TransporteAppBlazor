@@ -96,15 +96,32 @@ namespace TransporteWeb.Components.Pages
 
         private async Task Submit()
         {
-            await _form.ValidateAsync();
 
-            bool existe = list.Any(x => x.Numero_guia == _item.Numero_guia);
 
-            if (existe)
+            // 1. PRIMERO: Resetear el error anterior
+            _errorNumeroGuia = false;
+            _errorNumeroGuiaText = "";
+
+            // 3. Validar existencia
+            if (!string.IsNullOrWhiteSpace(_item.Numero_guia))
             {
-                _errorNumeroGuia = true;
-                _errorNumeroGuiaText = $"El número de guía {_item.Numero_guia} ya existe!";
+                bool existe = list.Any(x => x.Numero_guia == _item.Numero_guia);
+
+                if (existe)
+                {
+                    _errorNumeroGuia = true;
+                    _errorNumeroGuiaText = $"El número de guía {_item.Numero_guia} ya existe!";
+                    return;
+                }
             }
+
+            // 4. Forzar actualización ANTES de verificar si es válido
+            await InvokeAsync(StateHasChanged);
+
+            // 5. Pequeña pausa para asegurar que la UI se actualice
+            await Task.Delay(1);
+
+            await _form.ValidateAsync();
 
             if (_form.IsValid && _errorNumeroGuia == false)
             {
