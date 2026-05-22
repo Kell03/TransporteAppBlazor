@@ -98,6 +98,14 @@ namespace TransporteWeb.Components.Pages
         {
             await _form.ValidateAsync();
 
+            bool existe = list.Any(x => x.Numero_guia == _item.Numero_guia);
+
+            if (existe)
+            {
+                _errorNumeroGuia = true;
+                _errorNumeroGuiaText = $"El número de guía {_item.Numero_guia} ya existe!";
+            }
+
             if (_form.IsValid && _errorNumeroGuia == false)
             {
 
