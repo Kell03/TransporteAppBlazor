@@ -15,7 +15,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAngular", policy =>
+//    {
+//        policy.WithOrigins("http://localhost:4200")  // ✅ El origen de Angular
+//              .AllowAnyHeader()
+//              .AllowAnyMethod()
+//              .AllowCredentials();
+//    });
+//});
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -103,6 +112,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();              
+app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -59,6 +59,9 @@
                     </MudCard>
                 </MudItem>
 
+           
+
+
                 <MudItem xs="12" sm="12" md="4">
                     <MudCard Style="background-color:#C0C0C0;">
                         <MudCardHeader>
@@ -90,6 +93,18 @@
         </MudItem>
 
 
+            <MudItem xs="12" sm="12" md="6">
+            <MudPaper Class="doc-section-component-container">
+             <MudChart ChartType="ChartType.Bar" ChartSeries="@SeriesTipoViaje" ChartLabels="@XAxisLabels"  Width="100%" >
+
+</MudChart>
+
+  </MudPaper>
+
+        </MudItem>
+
+
+
         <MudItem xs="12" sm="12" md="6">
             <MudSelect Value="idPropietario"
                        ValueChanged="@((int nuevoId) => OnPropietarioChanged(nuevoId))"
@@ -106,6 +121,8 @@
 
 </MudContainer>
 @code {
+
+
 
     List<GuiaDto> list = new List<GuiaDto>();
     int idPropietario = 0;
@@ -124,9 +141,20 @@
 
     };
 
+    
+    public List<ChartSeries<double>> SeriesTipoViaje = new List<ChartSeries<double>>()
+    {
+    };
+
+
+    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
 
     private bool _matchBoundsToSize = false;
     List<double> month = new List<double>();
+    List<double> monthCircuito = new List<double>();
+    List<double> monthGc = new List<double>();
+    List<double> monthMp = new List<double>();
 
     private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
     {
@@ -166,26 +194,45 @@
     private void GetMonths(int idPropietario = 0)
     {
         _series.Clear();
+        SeriesTipoViaje.Clear();
         month.Clear();
+        monthGc.Clear();
+        monthMp.Clear();
+        monthCircuito.Clear();
         for (int i = 1; i <= _xAxisLabels.Length; i++)
         {
             int añoActual = DateTime.Now.Year;
             if (idPropietario > 0)
             {
                 var t = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario).Count();
+                var circuito = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario && x.Tipo == "Circuito").Count();
+                var GC = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario && x.Tipo == "GC").Count();
+                var Mp = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario && x.Tipo == "Materia Prima").Count();
                 totalGuias = list.Where(x => x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario).Count();
+                monthCircuito.Add(circuito);
+                monthGc.Add(GC);
+                monthMp.Add(GC);
                 month.Add(t);
             }
             else
             {
                 var t = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual).Count();
+                var circuito = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual &&  x.Tipo == "Circuito").Count();
+                var GC = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual &&  x.Tipo == "GC").Count();
+                var Mp = list.Where(x => x.Fecha.Month == i && x.Fecha.Year == añoActual && x.Tipo == "Materia Prima").Count();
                 totalGuias = list.Where(x =>  x.Fecha.Year == añoActual).Count();
+                monthCircuito.Add(circuito);
+                monthGc.Add(GC);
+                monthMp.Add(GC);
                 month.Add(t);
             }
             
             
         }
         _series.Add(new ChartSeries<double>() { Name = "Guias", Data = month.ToArray() });
+        SeriesTipoViaje.Add(new ChartSeries<double>() { Name = "Circuito", Data = monthCircuito.ToArray() });
+        SeriesTipoViaje.Add(new ChartSeries<double>() { Name = "GC", Data = monthGc.ToArray() });
+        SeriesTipoViaje.Add(new ChartSeries<double>() { Name = "Materia Prima", Data = monthMp.ToArray() });
 
     }
 }

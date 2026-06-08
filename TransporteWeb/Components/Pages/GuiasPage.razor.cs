@@ -103,7 +103,7 @@ namespace TransporteWeb.Components.Pages
             _errorNumeroGuiaText = "";
 
             // 3. Validar existencia
-            if (!string.IsNullOrWhiteSpace(_item.Numero_guia))
+            if (!string.IsNullOrWhiteSpace(_item.Numero_guia) && _item.Id == 0)
             {
                 bool existe = list.Any(x => x.Numero_guia == _item.Numero_guia);
 
