@@ -211,7 +211,7 @@
                 totalGuias = list.Where(x => x.Fecha.Year == añoActual && x.Camion.Propietario_Id == idPropietario).Count();
                 monthCircuito.Add(circuito);
                 monthGc.Add(GC);
-                monthMp.Add(GC);
+                monthMp.Add(Mp);
                 month.Add(t);
             }
             else
@@ -223,7 +223,7 @@
                 totalGuias = list.Where(x =>  x.Fecha.Year == añoActual).Count();
                 monthCircuito.Add(circuito);
                 monthGc.Add(GC);
-                monthMp.Add(GC);
+                monthMp.Add(Mp);
                 month.Add(t);
             }
             
