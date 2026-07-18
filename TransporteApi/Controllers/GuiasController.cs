@@ -371,6 +371,8 @@ namespace TransporteApi.Controllers
                 "Fecha",
                 "Condicion",
                 "Status",
+                "Tipo Camion",
+
             };
 
                 if(empresaId == 2)
@@ -413,10 +415,11 @@ namespace TransporteApi.Controllers
                     worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy");
                     worksheet.Cell(row, 8).Value = guia.Tipo;
                     worksheet.Cell(row, 9).Value = guia.Status;
+                    worksheet.Cell(row, 10).Value = guia.Camion?.Tipo_Camion;
                     if (empresaId == 2)
                     {
-                        worksheet.Cell(row, 10).Value = guia.Destino?.Kilometraje;
                         worksheet.Cell(row, 11).Value = guia.Destino?.Kilometraje;
+                        worksheet.Cell(row, 12).Value = guia.Destino?.Kilometraje;
 
                     }
                     row++;

@@ -51,7 +51,9 @@ namespace TransporteWeb.Repository.Repositories
 
         public async Task<List<GuiaDto>> GetAllAsync()
         {
-            await AddTokenToHeaderAsync();
+            try
+            {
+                await AddTokenToHeaderAsync();
             var response = await _httpClient.GetAsync($"{_baseUrl}/Guias");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -61,6 +63,12 @@ namespace TransporteWeb.Repository.Repositories
             };
             var itemsData = JsonSerializer.Deserialize<List<GuiaDto>>(json, options);
             return itemsData;
+
+        }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<GuiaDto> GetById(int id)

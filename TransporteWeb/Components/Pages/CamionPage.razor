@@ -127,7 +127,17 @@
                         </div>
 
 
-                        <MudTextField T="string" @bind-Value="_item.Tipo_Camion" Label="Tipo Camion" Required="true" RequiredError="Tipo Camion es requerida!" Class="mt-3" />
+                        <div class="mt-6">
+                            <MudSelect @bind-Value="_item.Tipo_Camion" Label="Selecciona el tipo de camion"
+                                       Variant="Variant.Outlined" ShrinkLabel>
+                                
+                                <MudSelectItem Value="@("PLATAFORMA")">PLATAFORMA</MudSelectItem>
+                                <MudSelectItem Value="@("CABINA")">CABINA</MudSelectItem>
+                                
+                            </MudSelect>
+                        </div>
+
+
                         <MudTextField T="string" @bind-Value="_item.Placa1" Label="Placa" Required="true" RequiredError="Placa es requerida!" Class="mt-3" />
                         <MudTextField T="string" @bind-Value="_item.Placa2" Label="Placa 2" Required="true" RequiredError="Placa 2 es requerida!" Class="mt-3" />
               
