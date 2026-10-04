@@ -41,6 +41,7 @@ builder.Services.AddScoped<CamionService>();
 builder.Services.AddScoped<ConductorService>(); 
 builder.Services.AddScoped<CentroDistribucionService>(); 
 builder.Services.AddScoped<GuiaService>(); 
+builder.Services.AddScoped<ClienteService>(); 
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>

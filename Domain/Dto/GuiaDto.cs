@@ -18,6 +18,12 @@ namespace Domain.Dto
         public int camion_id { get; set; } = 0;
         [NotMapped]
         public CamionDto? Camion { get; set; }
+
+
+        [Column("Cliente_id")]  // Nombre exacto en la BD
+        public int cliente_id { get; set; } = 0;
+        [NotMapped]
+        public ClienteDto? Cliente { get; set; }
         public int Origen_id { get; set; } = 0;
         [NotMapped]
         public CentroDistribucionDto? Origen { get; set; }

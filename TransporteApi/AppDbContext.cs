@@ -22,6 +22,7 @@ namespace TransporteApi.Models
         public DbSet<CentroDistribucion> Centro_distribucion => Set<CentroDistribucion>();
         public DbSet<Guia> Guias => Set<Guia>();
         public DbSet<Empresa> Empresa => Set<Empresa>();
+        public DbSet<Cliente> Clientes => Set<Cliente>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,6 +61,21 @@ namespace TransporteApi.Models
            .HasMany(d => d.Usuarios)
            .WithOne(p => p.Empresa)
            .HasForeignKey(d => d.EmpresaId);
+
+            modelBuilder.Entity<CentroDistribucion>(entity =>
+            {
+                entity.ToTable("Centro_distribucion");
+
+                entity.Property(e => e.Cliente_id)
+                    .HasColumnName("Cliente_id")
+                    .HasColumnType("int");
+
+                entity.HasOne(e => e.Cliente)
+                    .WithMany(c => c.Centros)
+                    .HasForeignKey(e => e.Cliente_id);
+            });
+
+
 
             modelBuilder.Entity<Guia>(entity =>
             {
@@ -100,6 +116,10 @@ namespace TransporteApi.Models
                     .HasColumnName("Destino_id")
                     .HasColumnType("int");
 
+                entity.Property(e => e.Cliente_id)              // 👈 debe coincidir
+                  .HasColumnName("Cliente_id")
+                  .HasColumnType("int");
+
                 entity.Property(e => e.Fecha)
                     .HasColumnName("Fecha")
                     .HasColumnType("datetime");
@@ -118,6 +138,14 @@ namespace TransporteApi.Models
                     .HasForeignKey(e => e.Conductor_id)
                     .HasConstraintName("FK_Guias_Conductores")
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Cliente)
+                  .WithMany(c => c.Guias)
+                  .HasForeignKey(e => e.Cliente_id)
+                  .HasConstraintName("FK_Guias_Clientes")
+                  .OnDelete(DeleteBehavior.SetNull);
+
+
 
                 entity.HasOne(e => e.Camion)
                     .WithMany()
@@ -153,6 +181,9 @@ namespace TransporteApi.Models
 
                 entity.HasIndex(e => e.Destino_id)
                     .HasDatabaseName("IX_Guias_DestinoId");
+
+                entity.HasIndex(e => e.Cliente_id)
+                    .HasDatabaseName("IX_Guias_ClienteId");
             });
 
 

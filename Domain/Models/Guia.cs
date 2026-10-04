@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Domain.Dto
@@ -32,6 +33,11 @@ namespace Domain.Dto
         public DateTime? Updated_at { get; set; }
 
         public int? EmpresaId { get; set; }
+
+        [Column("Cliente_id")]  // Nombre exacto en la BD
+
+        public int? Cliente_id { get; set; }
+        public Cliente? Cliente { get; set; }
     }
 
 }

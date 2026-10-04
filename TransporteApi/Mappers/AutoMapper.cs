@@ -62,8 +62,16 @@ namespace TransporteApi.Mappers
             .ForMember(dest => dest.Conductor, opt => opt.Ignore())
             .ForMember(dest => dest.Camion, opt => opt.Ignore())
             .ForMember(dest => dest.Origen, opt => opt.Ignore())
-            .ForMember(dest => dest.Destino, opt => opt.Ignore());
+            .ForMember(dest => dest.Destino, opt => opt.Ignore())
+             .ForMember(dest => dest.Cliente, opt => opt.Ignore());
             CreateMap<Guia, GuiaDto>();
+
+          
+            
+            CreateMap<Cliente, ClienteDto>();
+            CreateMap<ClienteDto, Cliente>()
+                .ForMember(dest => dest.Centros, opt => opt.Ignore())
+                .ForMember(dest => dest.Guias, opt => opt.Ignore());
 
 
 

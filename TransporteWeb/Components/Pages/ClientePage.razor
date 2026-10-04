@@ -1,0 +1,137 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Domain.Dto
+@using Domain.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using TransporteWeb.Repository.Interfaz
+@inject ISnackbar Snackbar
+@inject IBaseRepository<Cliente,ClienteDto> ClienteService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@attribute [Authorize]
+@page "/clientes"
+<h3>Clientes</h3>
+
+
+<MudPaper Height="90%" Width="90%" Class="mx-auto">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" TabPanelsClass="pa-6" @ref="_tabs" ActivePanelIndexChanged="OnTabChanged">
+
+        <MudTabPanel Text="Lista">
+
+
+            @if (isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+            }
+            else
+            {
+                <MudGrid Class="mb-2">
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected">
+                            <CustomContent>
+                                <MudButton Variant="Variant.Filled"
+                                           OnClick="@context.OpenFilePickerAsync"
+                                           Color="Color.Secondary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           FullWidth="true">
+                                    Archivo
+                                </MudButton>
+                            </CustomContent>
+                            <SelectedTemplate>
+                                @if (context != null)
+                                {
+                                    <MudText>@context.Name</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>No file selected</MudText>
+                                }
+                            </SelectedTemplate>
+                        </MudFileUpload>
+                    </MudItem>
+
+                    <MudItem xs="6" sm="4" md="3">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   @onclick="UploadFile"
+                                   disabled="@(selectedFile == null || isLoading)"
+                                   FullWidth="true">
+                            Procesar
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+
+
+
+
+            }
+
+
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                          Clearable="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-4"></MudTextField>
+
+
+            <MudDataGrid T="ClienteDto"
+                         Items="@list"
+                         SortMode="SortMode.Multiple"
+                         QuickFilter="@_quickFilter">
+
+                <Columns>
+                   
+                        <PropertyColumn Property="x => x.Nombre_comercial" Title="Nombre Comercial" />
+                        <PropertyColumn Property="x => x.Razon_social" Title="Razón Social" />
+                        <TemplateColumn CellClass="d-flex justify-end">
+                            <CellTemplate>
+                                @{
+                                    var item = context.Item;  // context es el item actual de la tabla
+                                }
+                                <MudStack Row>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                                                   OnClick="() => GetItemById(item.Id)" Class="mx-1" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                                   OnClick="() => DeleteItem(item.Id)" Class="mx-1" />
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="ClienteDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Formulario">
+
+            <MudGrid>
+                <MudItem xs="12" sm="7" md="10">
+
+                    <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
+
+                        <MudTextField T="string" @bind-Value="_item.Nombre_comercial" Label="Nombre Comercial" Required="true" RequiredError="Nombre Comercial es requerido!" Class="mt-3" />
+                        <MudTextField T="string" @bind-Value="_item.Razon_social" Label="Razón Social" Required="true" RequiredError="Razón Social es requerido!" Class="mt-3" />
+                      
+                       
+              
+                       
+                    </MudForm>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3" OnClick="@(async () => await Submit())">Guardar</MudButton>
+
+                           
+                </MudItem>
+
+            </MudGrid>
+
+        </MudTabPanel>
+    </MudTabs>
+
+</MudPaper>
+
+@code {
+
+}

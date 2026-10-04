@@ -1,4 +1,6 @@
-﻿namespace Domain.Dto
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Dto
 {
     public class CentroDistribucionDto
     {
@@ -10,5 +12,10 @@
 
         public int? EmpresaId { get; set; }
         public int? Kilometraje { get; set; }
+
+        [Column("Cliente_id")]  // Nombre exacto en la BD
+        public int cliente_id { get; set; } = 0;
+        [NotMapped]
+        public ClienteDto? Cliente { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using Blazored.SessionStorage;
 using Domain.Dto;
+using Domain.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IPropietarioRepository, PropietarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Camion, CamionDto>, CamionRepository>();
 builder.Services.AddScoped<IBaseRepository<Conductor, ConductorDto>, ConductorRepository>();
 builder.Services.AddScoped<IBaseRepository<Guia, GuiaDto>, GuiasRepository>();
+builder.Services.AddScoped<IBaseRepository<Cliente, ClienteDto>, ClienteRepository>();
 builder.Services.AddHttpClient();
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.AddMudServices();
