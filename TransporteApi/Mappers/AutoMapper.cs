@@ -15,9 +15,10 @@ namespace TransporteApi.Mappers
                 .ForMember(dest => dest.Rol, opt => opt.Ignore())
                 .ReverseMap();
 
-            CreateMap<CentroDistribucion, CentroDistribucionDto>()
-               .ReverseMap();
-
+            CreateMap<CentroDistribucion, CentroDistribucionDto>();
+            CreateMap<CentroDistribucionDto, CentroDistribucion>()
+                .ForMember(d => d.Id, opt => opt.Ignore())        // evita Duplicate entry
+                .ForMember(d => d.Cliente, opt => opt.Ignore());  // 👈
 
             CreateMap<Empresa, EmpresaDto>()
                .ReverseMap();

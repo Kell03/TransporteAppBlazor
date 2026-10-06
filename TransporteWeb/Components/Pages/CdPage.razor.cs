@@ -22,6 +22,7 @@ namespace TransporteWeb.Components.Pages
 
         private string _searchString;
 
+        List<ClienteDto> clientes = new List<ClienteDto>();
 
 
         private Task ActivateAsync(int index)
@@ -47,6 +48,7 @@ namespace TransporteWeb.Components.Pages
         private async Task GetData()
         {
             list = await CentroDistribucionService.GetAllAsync();
+            clientes = await ClienteService.GetAllAsync();
         }
 
 
@@ -89,7 +91,7 @@ namespace TransporteWeb.Components.Pages
             if (_form.IsValid)
             {
 
-
+                _item.cliente_id = _item.Cliente.Id;
                 var saveRol = (_item.Id == 0) ? await CentroDistribucionService.SaveAsync(_item) : await CentroDistribucionService.UpdateAsync(_item);
                 if (saveRol != null)
                 {
@@ -159,6 +161,20 @@ namespace TransporteWeb.Components.Pages
             {
                 isLoading = false;
             }
+        }
+
+
+        private async Task<IEnumerable<ClienteDto>> SearchClientes(string value, CancellationToken token)
+        {
+             await Task.Delay(5, token); // Simula latencia de API
+            
+             if (string.IsNullOrEmpty(value))
+                 return clientes;
+            
+             return clientes.Where(x =>
+                 x.Nombre_comercial.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+             );
+
         }
     }
 
