@@ -54,7 +54,9 @@ namespace TransporteWeb.Repository.Repositories
             try
             {
                 await AddTokenToHeaderAsync();
-            var response = await _httpClient.GetAsync($"{_baseUrl}/Guias");
+                var selectedCliente = await _sessionStorageService.GetItemAsync<ClienteDto>("clienteActual");
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/Guias?clienteId={selectedCliente.Id}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -149,8 +151,9 @@ namespace TransporteWeb.Repository.Repositories
             try
             {
                 await AddTokenToHeaderAsync();
+                var selectedCliente = await _sessionStorageService.GetItemAsync<ClienteDto>("clienteActual");
 
-                var response = await _httpClient.PostAsync($"{_baseUrl}/Guias/export/excel", new StringContent(JsonSerializer.Serialize(exportRequest), Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PostAsync($"{_baseUrl}/Guias/export/excel?clienteId={selectedCliente.Id}", new StringContent(JsonSerializer.Serialize(exportRequest), Encoding.UTF8, "application/json"));
 
 
                 // ✅ Leer el error específico

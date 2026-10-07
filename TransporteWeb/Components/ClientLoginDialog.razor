@@ -1,0 +1,55 @@
+﻿
+@using Domain.Dto
+@using MudBlazor
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Selecciona tu cliente</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (Clientes == null || !Clientes.Any())
+        {
+            <MudAlert Severity="Severity.Warning">No hay clientes disponibles.</MudAlert>
+        }
+        else
+        {
+            <MudText Class="mb-3">Elige el cliente con el que deseas entrar:</MudText>
+
+            <MudSelect T="ClienteDto"
+                       @bind-Value="SelectedCliente"
+                       Label="Cliente"
+                       Variant="Variant.Outlined"
+                       ToStringFunc="@(c => c is null ? string.Empty : $"{c.Nombre_comercial} ")">
+                @foreach (var c in Clientes)
+                {
+                    <MudSelectItem T="ClienteDto" Value="@c">@c.Nombre_comercial (@c.Id)</MudSelectItem>
+                }
+            </MudSelect>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="Submit"
+                   Disabled="@(SelectedCliente == null)">
+            Aceptar
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public List<ClienteDto> Clientes { get; set; } = new();
+
+    private ClienteDto? SelectedCliente { get; set; }
+
+    private void Submit()
+    {
+        if (SelectedCliente is null) return;
+        MudDialog.Close(DialogResult.Ok(SelectedCliente));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -40,6 +40,10 @@
     private async Task Logout()
     {
         await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
-        NavigationManager.NavigateTo("/auth/login", true);
+
+        // Esperar a que el estado se propague
+        await Task.Yield();
+
+        NavigationManager.NavigateTo("/auth/login");
     }
 }

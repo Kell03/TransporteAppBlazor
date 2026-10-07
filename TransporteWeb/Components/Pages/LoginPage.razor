@@ -1,13 +1,19 @@
 ﻿@page "/auth/login"
 @layout TransporteWeb.Components.Layout.LoginLayout
 @using Blazored.SessionStorage
+@using Domain.Dto
+@using Domain.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using TransporteWeb.Contracts
+@using TransporteWeb.Repository.Interfaz
 @using TransporteWeb.Services
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 @inject ISessionStorageService SessionStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IBaseRepository<Cliente,ClienteDto> ClienteService
+@inject IDialogService DialogService
+@rendermode InteractiveServer        
 
 
 
@@ -46,27 +52,53 @@
 
     private AuthRequest? _item = new AuthRequest();
 
+    List<ClienteDto> clientes = new List<ClienteDto>();
 
+   
 
 
     private async Task Submit()
     {
-        var authResponse = await AuthService.Login(_item!);
-        if (authResponse != null)
+       var authResponse = await AuthService.Login(_item!);
+    if (authResponse == null)
+    {
+        Console.WriteLine("Login falló: credenciales inválidas");
+        return;
+    }
+
+    await SessionStorage.SetItemAsync("token", authResponse.Token);
+
+    try
+    {
+        clientes = await ClienteService.GetAllAsync();
+
+        var parameters = new DialogParameters
         {
-            try
-            {
-                
-                await SessionStorage.SetItemAsync("token", authResponse.Token);
-                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(authResponse!);
-                NavigationManager.NavigateTo("/");
-            }
-            catch (Exception ex)
-            {
-                ;
-            }
+            { nameof(ClientLoginDialog.Clientes), clientes }
+        };
+
+        var dialog = await DialogService.ShowAsync<ClientLoginDialog>("Seleccionar cliente", parameters);
+        var result = await dialog.Result;
+
+        if (result == null || result.Canceled)
+            return;
+
+        var clienteSeleccionado = (ClienteDto)result.Data!;
+        await SessionStorage.SetItemAsync("clienteActual", clienteSeleccionado);
+
+        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser(authResponse);
+
+            await Task.Delay(300);
+
+        NavigationManager.NavigateTo("/");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error en login: {ex.Message}");
+        Console.WriteLine($"Stack: {ex.StackTrace}");
+    }
         }
 
         
-    }
+    
 }

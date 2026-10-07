@@ -12,9 +12,9 @@ namespace TransporteApi.Services
         }
 
 
-        public override async Task<IEnumerable<CentroDistribucionDto>> GetAllAsync(int idempresa = 0)
+        public override async Task<IEnumerable<CentroDistribucionDto>> GetAllAsync(int idempresa = 0, int clienteId = 0)
         {
-            var entities = await _appDbContext.Centro_distribucion.Where(x => x.EmpresaId == idempresa).Include(x => x.Cliente).ToListAsync();
+            var entities = await _appDbContext.Centro_distribucion.Where(x => x.EmpresaId == idempresa && x.Cliente_id == clienteId).Include(x => x.Cliente).ToListAsync();
             return _mapper.Map<IEnumerable<CentroDistribucionDto>>(entities);
         }
         public virtual async Task<CentroDistribucionDto> GetByCodigoAsync(string codigo)

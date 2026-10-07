@@ -10,7 +10,6 @@ namespace TransporteApi.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ClienteController : ControllerBase
     {
 
@@ -28,6 +27,7 @@ namespace TransporteApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
+
             IEnumerable<ClienteDto> lista = await _service.GetAllAsync(empresaId);
             return Ok(lista);
         }

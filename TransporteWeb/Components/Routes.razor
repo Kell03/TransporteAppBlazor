@@ -2,8 +2,13 @@
 @using TransporteWeb.Components.Layout
 @using Microsoft.AspNetCore.Components.Routing
 @inject NavigationManager NavigationManager
+@* Routes.razor *@
 
-<CascadingAuthenticationState>
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
     <!-- ✅ Envolver todo con esto -->
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -27,4 +32,3 @@
             </LayoutView>
         </NotFound>
     </Router>
-</CascadingAuthenticationState>

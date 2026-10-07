@@ -35,10 +35,10 @@ namespace TransporteApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int clienteID)
         {
             int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
-            IEnumerable<GuiaDto> lista = await _service.GetAllAsync(empresaId);
+            IEnumerable<GuiaDto> lista = await _service.GetAllAsync(empresaId, clienteID);
             return Ok(lista);
         }
 
@@ -280,7 +280,8 @@ namespace TransporteApi.Controllers
                             camion_id = camion.Id,
                             Fecha = fecha,
                             Created_at = DateTime.Now,
-                            EmpresaId = empresaId
+                            EmpresaId = empresaId,
+                            cliente_id = 1
                         };
 
 
@@ -316,12 +317,12 @@ namespace TransporteApi.Controllers
 
 
         [HttpPost("export/excel")]
-        public async Task<IActionResult> ExportarGuiasExcel([FromBody] ExportRequest exportRequest)
+        public async Task<IActionResult> ExportarGuiasExcel([FromBody] ExportRequest exportRequest, int clienteId)
         {
 
             int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
             // Cargar guías con sus relaciones
-            var guiasQuery = await _service.GetAllAsync(empresaId);
+            var guiasQuery = await _service.GetAllAsync(empresaId, clienteId);
 
             // Aplicar QuickFilter si existe
             if (!string.IsNullOrWhiteSpace(exportRequest?.SearchString))
@@ -370,7 +371,7 @@ namespace TransporteApi.Controllers
                 "Destino",
                 "Fecha",
                 "Condicion",
-                "Status",
+                "Descripcion",
                 "Tipo Camion",
 
             };
@@ -414,7 +415,7 @@ namespace TransporteApi.Controllers
                     }
                     worksheet.Cell(row, 7).Value = guia.Fecha.ToString("dd/MM/yyyy");
                     worksheet.Cell(row, 8).Value = guia.Tipo;
-                    worksheet.Cell(row, 9).Value = guia.Status;
+                    worksheet.Cell(row, 9).Value = guia.Descripcion;
                     worksheet.Cell(row, 10).Value = guia.Camion?.Tipo_Camion;
                     if (empresaId == 2)
                     {

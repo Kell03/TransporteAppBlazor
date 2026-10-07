@@ -18,11 +18,18 @@ namespace TransporteApi.Services
             _dbSet = _appDbContext.Set<T>();
         }
 
+
+
         private bool TienePropiedadIdEmpresa()
         {
             return typeof(T).GetProperty("EmpresaId") != null;
         }
 
+
+        private bool TienePropiedad(string nombrePropiedad)
+        {
+            return typeof(T).GetProperty(nombrePropiedad) != null;
+        }
 
         public virtual void ClearContext()
         {
@@ -78,14 +85,22 @@ namespace TransporteApi.Services
             return await query.FirstOrDefaultAsync();
         }
 
-        public virtual async Task<IEnumerable<TDto>> GetAllAsync(int idempresa = 0)
+
+
+        public virtual async Task<IEnumerable<TDto>> GetAllAsync(int idempresa = 0, int clienteId = 0)
         {
             IQueryable<T> query = _dbSet;
 
-            // Si se pasa un idempresa válido, filtrar
-            if (idempresa > 0 && TienePropiedadIdEmpresa())
+            // Filtrar por empresa si se pasa un id válido y la entidad tiene la propiedad
+            if (idempresa > 0 && TienePropiedad("EmpresaId"))
             {
                 query = query.Where(e => EF.Property<int>(e, "EmpresaId") == idempresa);
+            }
+
+            // Filtrar por cliente si se pasa un id válido y la entidad tiene la propiedad
+            if (clienteId > 0 && TienePropiedad("Cliente_id"))
+            {
+                query = query.Where(e => EF.Property<int>(e, "Cliente_id") == clienteId);
             }
 
             var entities = await query.ToListAsync();

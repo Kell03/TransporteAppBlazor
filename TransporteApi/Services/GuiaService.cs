@@ -12,7 +12,7 @@ namespace TransporteApi.Services
         {
         }
 
-        public override async Task<IEnumerable<GuiaDto>> GetAllAsync(int idempresa = 0)
+        public override async Task<IEnumerable<GuiaDto>> GetAllAsync(int idempresa = 0, int clienteId = 0)
         {
             var entities = await _appDbContext.Guias
                 .Include(x => x.Conductor)
@@ -21,7 +21,7 @@ namespace TransporteApi.Services
                    .ThenInclude(c => c.Propietario)
                 .Include(x => x.Origen)
                 .Include(x => x.Destino)
-                .Where(x => x.EmpresaId == idempresa)
+                .Where(x => x.EmpresaId == idempresa && x.Cliente_id == clienteId)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<GuiaDto>>(entities);
         }

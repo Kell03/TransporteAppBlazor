@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Domain.Models;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using static MudBlazor.CategoryTypes;
@@ -23,7 +24,7 @@ namespace TransporteWeb.Components.Pages
         private string _searchString;
 
         List<ClienteDto> clientes = new List<ClienteDto>();
-
+        ClienteDto? selectedCliente = null;
 
         private Task ActivateAsync(int index)
         {
@@ -32,6 +33,8 @@ namespace TransporteWeb.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            selectedCliente = await SessionStorage.GetItemAsync<ClienteDto>("clienteActual");
+
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             empresaId = Convert.ToInt32(user.FindFirst("EmpresaId")?.Value);
@@ -91,7 +94,7 @@ namespace TransporteWeb.Components.Pages
             if (_form.IsValid)
             {
 
-                _item.cliente_id = _item.Cliente.Id;
+                _item.cliente_id = selectedCliente.Id;
                 var saveRol = (_item.Id == 0) ? await CentroDistribucionService.SaveAsync(_item) : await CentroDistribucionService.UpdateAsync(_item);
                 if (saveRol != null)
                 {

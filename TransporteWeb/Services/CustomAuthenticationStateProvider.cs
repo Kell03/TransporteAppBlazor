@@ -52,6 +52,7 @@ namespace TransporteWeb.Services
         public async Task Logout()
         {
             await _sessionStorageService.RemoveItemAsync("token");
+            await _sessionStorageService.RemoveItemAsync("clienteActual");
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
         }
     }

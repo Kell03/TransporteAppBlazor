@@ -26,10 +26,10 @@ namespace TransporteApi.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int clienteID)
         {
             int empresaId = Convert.ToInt32(User.FindFirst("EmpresaId")?.Value);
-            IEnumerable<CentroDistribucionDto> lista = await _service.GetAllAsync(empresaId);
+            IEnumerable<CentroDistribucionDto> lista = await _service.GetAllAsync(empresaId, clienteID);
             return Ok(lista);
         }
 

@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
+@using Blazored.SessionStorage
 @using Domain.Dto
 @using Domain.Models
 @using Microsoft.AspNetCore.Authorization
@@ -14,6 +15,7 @@
 @inject IBaseRepository<Cliente,ClienteDto> ClienteService
 @inject IJSRuntime JS
 @inject IDialogService DialogService
+@inject ISessionStorageService SessionStorage
 
 @attribute [Authorize]
 @page "/guias"
@@ -135,19 +137,6 @@
                             RequiredError="Numero Guia es requerido!" Class="mt-3" />
 
 
-                        <div class="mt-6">
-                            <MudAutocomplete T="ClienteDto"
-                                             Label="Buscar Cliente"
-                                             @bind-Value="_item.Cliente"
-                                             OnBlur="@OnBlurHandler"
-                                             SearchFunc="@SearchClientes"
-                                             ToStringFunc="@(x => x?.Nombre_comercial ?? "")"
-                                             Variant="Variant.Outlined"
-                                             Clearable="true"
-                                             Immediate="true"
-                                             DebounceInterval="300">
-                            </MudAutocomplete>
-                        </div>
 
                         <div class="mt-6">
                         

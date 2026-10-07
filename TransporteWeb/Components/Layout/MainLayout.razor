@@ -1,14 +1,27 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.SessionStorage
+@using Domain.Dto
+@inherits LayoutComponentBase
+@inject ISessionStorageService SessionStorage
 
 <MudThemeProvider Theme="@_temaPersonalizado" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+
 
 <MudLayout>
     <MudAppBar Style="font-size: 1.1rem;">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"  Edge="Edge.Start" @onclick="DrawerToggle" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       @onclick="DrawerToggle" />
         APP TMM
+
+        <MudSpacer />
+
+        @if (_cliente is not null)
+        {
+            <MudText Style="color: white; font-weight: 500;">
+                @_cliente.Nombre_comercial
+            </MudText>
+        }
     </MudAppBar>
     <MudDrawer Style="background-color: #C0C0C0;" @bind-Open="@_drawerOpen">
         <NavMenu/>
@@ -29,6 +42,18 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private ClienteDto? _cliente;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Leer el cliente del SessionStorage
+        if (await SessionStorage.ContainKeyAsync("clienteActual"))
+        {
+            _cliente = await SessionStorage.GetItemAsync<ClienteDto>("clienteActual");
+        }
     }
 
     private MudTheme _temaPersonalizado = new MudTheme()

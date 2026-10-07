@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using TransporteWeb.Repository.Interfaz;
 using TransporteWeb.Utils;
+using Blazored.SessionStorage;
 
 namespace TransporteWeb.Repository.Repositories
 {
@@ -54,10 +55,12 @@ namespace TransporteWeb.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<CentroDistribucionDto>> GetAllAsync()
+        public  async Task<List<CentroDistribucionDto>> GetAllAsync()
         {
             await AddTokenToHeaderAsync();
-            var response = await _httpClient.GetAsync($"{_baseUrl}/CentroDistribucion");
+            var selectedCliente = await _sessionStorageService.GetItemAsync<ClienteDto>("clienteActual");
+
+            var response = await _httpClient.GetAsync($"{_baseUrl}/CentroDistribucion?clienteId={selectedCliente.Id}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions

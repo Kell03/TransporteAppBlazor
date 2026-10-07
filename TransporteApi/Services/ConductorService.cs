@@ -14,7 +14,7 @@ namespace TransporteApi.Services
         {
         }
 
-        public override async Task<IEnumerable<ConductorDto>> GetAllAsync(int idempresa = 0)
+        public override async Task<IEnumerable<ConductorDto>> GetAllAsync(int idempresa = 0, int clienteId = 0)
         {
             var entities = await _appDbContext.Conductores.Where(x => x.EmpresaId == idempresa).Include(x => x.Propietario).Include(x => x.Camion).ToListAsync();
             return _mapper.Map<IEnumerable<ConductorDto>>(entities);

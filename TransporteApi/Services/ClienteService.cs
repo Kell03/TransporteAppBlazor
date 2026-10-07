@@ -14,7 +14,7 @@ namespace TransporteApi.Services
 
 
 
-        public override async Task<IEnumerable<ClienteDto>> GetAllAsync(int idempresa = 0)
+        public override async Task<IEnumerable<ClienteDto>> GetAllAsync(int idempresa = 0, int clienteId = 0)
         {
             try
             {

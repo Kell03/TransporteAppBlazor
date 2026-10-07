@@ -1,4 +1,5 @@
-﻿@using Domain.Dto
+﻿@using Blazored.SessionStorage
+@using Domain.Dto
 @using Domain.Models
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -8,7 +9,7 @@
 @inject ISnackbar Snackbar
 @inject IBaseRepository<CentroDistribucion,CentroDistribucionDto> CentroDistribucionService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject ISessionStorageService SessionStorage
 @attribute [Authorize]
 @page "/centrodistribucion"
 <h3>Centros de Distribución</h3>
@@ -136,18 +137,7 @@
                       
                     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors" OnEnterPressed="@(() => _form.ValidateAsync())">
                                 
-                        <div class="mt-6">
-                            <MudAutocomplete T="ClienteDto"
-                                             Label="Buscar Cliente"
-                                             @bind-Value="_item.Cliente"
-                                             SearchFunc="@SearchClientes"
-                                             ToStringFunc="@(x => x?.Nombre_comercial ?? "")"
-                                             Variant="Variant.Outlined"
-                                             Clearable="true"
-                                             Immediate="true"
-                                             DebounceInterval="300">
-                            </MudAutocomplete>
-                        </div>
+
                         <MudTextField T="string" @bind-Value="_item.Nombre" Label="Nombre" Required="true" RequiredError="Nombre es requerido!" Class="mt-3" />
                         <MudTextField T="string" @bind-Value="_item.Codigo" Label="Código" Required="true" RequiredError="Código es requerido!" Class="mt-3" />
                         @if (empresaId == 2)

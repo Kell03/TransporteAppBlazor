@@ -1,4 +1,5 @@
 ﻿using Domain.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransporteWeb.Repository.Interfaz
 {
@@ -9,6 +10,7 @@ namespace TransporteWeb.Repository.Interfaz
 
 
         Task<List<TDto>> GetAllAsync();
+       
         Task<TDto> UpdateAsync(TDto entity);
         Task<TDto> GetById(int id);
         Task<bool> DeleteAsync(int id);

@@ -9,5 +9,7 @@
         public string? EmpresaId { get; set; }
         public string? RolId { get; set; }
         public string Token { get; set; } 
+        public string NombreCliente { get; set; } 
+        public int IdCliente { get; set; } 
     }
 }

@@ -7,7 +7,8 @@ namespace TransporteApi.Services
         // Métodos que usarán ambos tipos
         Task<TDto> GetByIdAsync( int id, int idempresa = 0);
         Task<T> FindAsync(int id, int idempresa = 0);
-        Task<IEnumerable<TDto>> GetAllAsync(int idempresa = 0);
+        Task<IEnumerable<TDto>> GetAllAsync(int idempresa = 0, int clienteId = 0);   // 👈 agregar
+
         Task<TDto> CreateAsync(T entity);
         Task<TDto> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);

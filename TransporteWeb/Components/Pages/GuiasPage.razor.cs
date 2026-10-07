@@ -37,6 +37,8 @@ namespace TransporteWeb.Components.Pages
         private bool _errorNumeroGuia = false;
         private string _errorNumeroGuiaText = "";
 
+        ClienteDto? selectedCliente = null;
+
         private Task ActivateAsync(int index)
         {
             return _tabs.ActivatePanelAsync(index);
@@ -56,12 +58,15 @@ namespace TransporteWeb.Components.Pages
 
         private async Task GetData()
         {
+
+            selectedCliente = await SessionStorage.GetItemAsync<ClienteDto>("clienteActual");
+
             list = await GuiaService.GetAllAsync();
             list = list.OrderByDescending(x => x.Id).ToList();
             conductores = await ConductorService.GetAllAsync();
             camiones = await CamionService.GetAllAsync();
             clientes = await ClienteService.GetAllAsync();
-
+            origen = await OrigenService.GetAllAsync();
             //destino = await DestinoService.GetAllAsync();
         }
 
@@ -136,7 +141,7 @@ namespace TransporteWeb.Components.Pages
                 _item.Destino_id = _item.Destino.Id;
                 _item.Conductor_id = _item.Conductor.Id;
                 _item.camion_id = _item.Camion.Id;
-                _item.cliente_id = _item.Cliente.Id;
+                _item.cliente_id =selectedCliente.Id;
                 var saveRol = (_item.Id == 0) ? await GuiaService.SaveAsync(_item) : await GuiaService.UpdateAsync(_item);
                 if (saveRol != null)
                 {
@@ -235,8 +240,7 @@ namespace TransporteWeb.Components.Pages
             {
                 await Task.Delay(5, token); // Simula latencia de API
 
-                if (string.IsNullOrEmpty(value))
-                    return origen.Where(x => x.Id != _item.Origen.Id && x.cliente_id == _item.Cliente.Id);
+          
 
                 return origen.Where(x =>
                     x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase) && x.Id != _item.Origen.Id
@@ -377,39 +381,8 @@ namespace TransporteWeb.Components.Pages
         }
 
 
-        private async Task<IEnumerable<ClienteDto>> SearchClientes(string value, CancellationToken token)
-        {
-            await Task.Delay(5, token); // Simula latencia de API
+       
 
-            if (string.IsNullOrEmpty(value))
-            {
-                return clientes;
-
-            }
-
-          
-            return clientes.Where(x =>
-                x.Nombre_comercial.Contains(value, StringComparison.InvariantCultureIgnoreCase)
-            );
-
-        }
-
-        private async Task OnBlurHandler(FocusEventArgs args)
-        {
-            // Usa el valor actual del _item.Origen, no "value"
-            if (_item.Cliente != null)
-            {
-                // Obtén todos y filtra por cliente
-                var todos = await OrigenService.GetAllAsync();
-                origen = todos.Where(x => x.cliente_id == _item.Cliente.Id).ToList();
-            }
-            else
-            {
-                // Opcional: limpiar la lista si no hay selección
-                origen = new List<CentroDistribucionDto>();
-            }
-            StateHasChanged();
-
-        }
+       
     }
 }
