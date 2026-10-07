@@ -119,6 +119,9 @@ namespace TransporteWeb.Components.Pages
             if (x.Nombre.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
 
+            if (x.Cliente.Nombre_comercial.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
             return false;
         };
 

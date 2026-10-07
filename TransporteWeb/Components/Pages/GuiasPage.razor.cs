@@ -1,6 +1,7 @@
 ﻿using Domain.Dto;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -20,6 +21,9 @@ namespace TransporteWeb.Components.Pages
         List<CamionDto> camiones = new List<CamionDto>();
         private string[] _errors = [];
         private MudDataGrid<GuiaDto> _dataGrid;
+
+        List<ClienteDto> clientes = new List<ClienteDto>();
+
         public bool Disabled { get; set; }
         private MudTabs _tabs = null!;
         private DateTime? _date = DateTime.Today;
@@ -56,7 +60,8 @@ namespace TransporteWeb.Components.Pages
             list = list.OrderByDescending(x => x.Id).ToList();
             conductores = await ConductorService.GetAllAsync();
             camiones = await CamionService.GetAllAsync();
-            origen = await OrigenService.GetAllAsync();
+            clientes = await ClienteService.GetAllAsync();
+
             //destino = await DestinoService.GetAllAsync();
         }
 
@@ -131,6 +136,7 @@ namespace TransporteWeb.Components.Pages
                 _item.Destino_id = _item.Destino.Id;
                 _item.Conductor_id = _item.Conductor.Id;
                 _item.camion_id = _item.Camion.Id;
+                _item.cliente_id = _item.Cliente.Id;
                 var saveRol = (_item.Id == 0) ? await GuiaService.SaveAsync(_item) : await GuiaService.UpdateAsync(_item);
                 if (saveRol != null)
                 {
@@ -169,6 +175,8 @@ namespace TransporteWeb.Components.Pages
             if (x.Tipo.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
 
+            if (x.Cliente.Nombre_comercial.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
 
             return false;
         };
@@ -228,7 +236,7 @@ namespace TransporteWeb.Components.Pages
                 await Task.Delay(5, token); // Simula latencia de API
 
                 if (string.IsNullOrEmpty(value))
-                    return origen.Where(x => x.Id != _item.Origen.Id);
+                    return origen.Where(x => x.Id != _item.Origen.Id && x.cliente_id == _item.Cliente.Id);
 
                 return origen.Where(x =>
                     x.Nombre.Contains(value, StringComparison.InvariantCultureIgnoreCase) && x.Id != _item.Origen.Id
@@ -366,6 +374,42 @@ namespace TransporteWeb.Components.Pages
                     _errorNumeroGuiaText = $"El número de guía {_item.Numero_guia} ya existe!";
                 }
             }
+        }
+
+
+        private async Task<IEnumerable<ClienteDto>> SearchClientes(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token); // Simula latencia de API
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return clientes;
+
+            }
+
+          
+            return clientes.Where(x =>
+                x.Nombre_comercial.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            );
+
+        }
+
+        private async Task OnBlurHandler(FocusEventArgs args)
+        {
+            // Usa el valor actual del _item.Origen, no "value"
+            if (_item.Cliente != null)
+            {
+                // Obtén todos y filtra por cliente
+                var todos = await OrigenService.GetAllAsync();
+                origen = todos.Where(x => x.cliente_id == _item.Cliente.Id).ToList();
+            }
+            else
+            {
+                // Opcional: limpiar la lista si no hay selección
+                origen = new List<CentroDistribucionDto>();
+            }
+            StateHasChanged();
+
         }
     }
 }

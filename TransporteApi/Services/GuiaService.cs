@@ -16,6 +16,7 @@ namespace TransporteApi.Services
         {
             var entities = await _appDbContext.Guias
                 .Include(x => x.Conductor)
+                .Include(x => x.Cliente)
                 .Include(x => x.Camion)
                    .ThenInclude(c => c.Propietario)
                 .Include(x => x.Origen)
@@ -27,14 +28,14 @@ namespace TransporteApi.Services
 
         public virtual async Task<GuiaDto> GetByIdAsync(int id, int idempresa )
         {
-            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Id == id).Where(x => x.EmpresaId == idempresa).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Guias.Include(x => x.Conductor).Include(x => x.Cliente).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Id == id).Where(x => x.EmpresaId == idempresa).FirstOrDefaultAsync();
             return _mapper.Map<GuiaDto>(entity);
         }
 
 
         public virtual async Task<GuiaDto> GetByNumeroAsync(string numero, int idempresa)
         {
-            var entity = await _appDbContext.Guias.Where(x => x.EmpresaId == idempresa).Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Numero_guia == numero).FirstOrDefaultAsync();
+            var entity = await _appDbContext.Guias.Where(x => x.EmpresaId == idempresa).Include(x => x.Cliente).Include(x => x.Conductor).Include(x => x.Camion).Include(x => x.Origen).Include(x => x.Destino).Where(x => x.Numero_guia == numero).FirstOrDefaultAsync();
             return _mapper.Map<GuiaDto>(entity);
         }
 
@@ -60,6 +61,10 @@ namespace TransporteApi.Services
 
                 case "Origen.Nombre":
                     return query.Where(x => x.Origen.Nombre.Contains(value));
+
+                case "Cliente.Nombre_comercial":
+                    return query.Where(x => x.Cliente.Nombre_comercial.Contains(value));
+
 
                 case "Destino.Nombre":
                     return query.Where(x => x.Destino.Nombre.Contains(value));
