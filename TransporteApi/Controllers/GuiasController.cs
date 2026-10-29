@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Presentation;
 using Domain.Dto;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using TransporteApi.Services;
 
 namespace TransporteApi.Controllers
@@ -581,27 +585,117 @@ namespace TransporteApi.Controllers
             }
         }
 
-       //private async Task EnviarCorreoConAdjunto(string destinatario, string asunto, string cuerpo, byte[] adjunto, string nombreArchivo)
-       //{
-       //
-       //   // bca4603488512812e1fdab172d8aa8d6
-       //    var apiKey = _configuration["SendGrid:ApiKey"];
-       //    var client = new SendGridClient(apiKey);
-       //
-       //    var from = new SendGrid.Helpers.Mail.EmailAddress("sistema@transportes.com", "Sistema de Transporte");
-       //    var to = new EmailAddress(destinatario);
-       //
-       //    var msg = MailHelper.CreateSingleEmail(from, to, asunto, cuerpo, cuerpo);
-       //    var archivoAdjunto = Convert.ToBase64String(adjunto);
-       //    msg.AddAttachment(nombreArchivo, archivoAdjunto);
-       //
-       //    await client.SendEmailAsync(msg);
-       //}
+
+        public class TelegramWebhookDto
+        {
+            public string Mensaje { get; set; } = string.Empty;
+        }
+
+        [HttpPost("telegram")]
+        [AllowAnonymous] // <-- ESTO LE DICE A .NET: "No pidas token para este endpoint"
+        public async Task<IActionResult> GuardarGuiaDesdeTelegram([FromBody] GuiaTelegramDto payload)
+        {
+            //Ejemplo de mensaje en telegram
+        ///guia: 00 - 04089167, tipo: GC, origen: VAAA, destino: Escalante, cedula: 11598064, placa: A80AY7R
+            if (payload == null || string.IsNullOrWhiteSpace(payload.Numero_guia))
+            {
+                return BadRequest(new { error = "El número de guía es obligatorio." });
+            }
+
+            try
+            {
+                // 1. BUSCAR LOS IDs POR LOS TEXTOS RECIBIDOS
+                // (Usamos .FirstOrDefaultAsync para buscar por el nombre o cédula)
+
+                var origenDb = await _Cdservice.GetByCodigoAsync(payload.NombreOrigen.ToLower());
+
+                if (origenDb == null)
+                    return BadRequest(new { error = $"No se encontró el origen: {payload.NombreOrigen}" });
+
+               
+                
+                var destinoDb = await _Cdservice.GetByCodigoAsync(payload.NombreDestino.ToLower());
+                if (destinoDb == null)
+                    return BadRequest(new { error = $"No se encontró el destino: {payload.NombreDestino}" });
+
+
+                
 
 
 
+                var conductorDb = await _conductorservice.GetByCedulaAsync(payload.CedulaConductor, payload.EmpresaId);
+   
+                if (conductorDb == null)
+                    return BadRequest(new { error = $"No se encontró el conductor con cédula: {payload.CedulaConductor}" });
+
+                var camionDb = await _camionService.GetByPlacaAsync(payload.PlacaCamion, payload.EmpresaId);
+
+
+                if (camionDb == null)
+                    return BadRequest(new { error = $"No se encontró el camión con placa: {payload.PlacaCamion}" });
+
+                // 2. CREAR LA ENTIDAD GUIA
+                var nuevaGuia = new Guia
+                {
+                    Numero_guia = payload.Numero_guia,
+                    Tipo = payload.Tipo,
+                    Status = "Pendiente", // O el status que uses por defecto
+                    Descripcion = payload.Descripcion,
+                    Cliente_id = payload.ClienteId > 0 ? payload.ClienteId : null,
+                    EmpresaId = payload.EmpresaId,
+
+                    // Asignamos los IDs encontrados en las búsquedas
+                    Origen_id = origenDb.Id,
+                    Destino_id = destinoDb.Id,
+                    Conductor_id = conductorDb.Id,
+                    Camion_id = camionDb.Id,
+
+                    // Fechas
+                    Fecha = DateTime.Now,
+                    Created_at = DateTime.Now
+                };
+
+          
+                Guia item = _mapper.Map<Guia>(nuevaGuia);
+                item.EmpresaId = payload.EmpresaId;
+                item.Created_at = DateTime.Now;
+                await _service.CreateAsync(item);
+   
+                return Ok(new
+                {
+                    mensaje = "Guía creada exitosamente",
+                    idGenerado = item.Id,
+                    numeroGuia = item.Numero_guia
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
+            }
+        }
     }
+
+    //private async Task EnviarCorreoConAdjunto(string destinatario, string asunto, string cuerpo, byte[] adjunto, string nombreArchivo)
+    //{
+    //
+    //   // bca4603488512812e1fdab172d8aa8d6
+    //    var apiKey = _configuration["SendGrid:ApiKey"];
+    //    var client = new SendGridClient(apiKey);
+    //
+    //    var from = new SendGrid.Helpers.Mail.EmailAddress("sistema@transportes.com", "Sistema de Transporte");
+    //    var to = new EmailAddress(destinatario);
+    //
+    //    var msg = MailHelper.CreateSingleEmail(from, to, asunto, cuerpo, cuerpo);
+    //    var archivoAdjunto = Convert.ToBase64String(adjunto);
+    //    msg.AddAttachment(nombreArchivo, archivoAdjunto);
+    //
+    //    await client.SendEmailAsync(msg);
+    //}
 
 
 
 }
+
+
+
+
