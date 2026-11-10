@@ -10,31 +10,44 @@
             <MudNavLink Href="/auth/login" Match="NavLinkMatch.All">Login</MudNavLink>
         </NotAuthorized>
         <Authorized>
-        <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-    <MudNavLink Href="/guias" Match="NavLinkMatch.Prefix">Guias</MudNavLink>
-    <MudNavGroup Title="Configuracion" Expanded="false">
-        <MudNavLink Href="/propietario" Match="NavLinkMatch.Prefix">Propietarios</MudNavLink>
-        <MudNavLink Href="/camion" Match="NavLinkMatch.Prefix">Camiones</MudNavLink>
-        <MudNavLink Href="/conductor" Match="NavLinkMatch.Prefix">Conductores</MudNavLink>
-        <MudNavLink Href="/centrodistribucion" Match="NavLinkMatch.Prefix">Centros de Distribucion</MudNavLink>
-        <MudNavLink Href="/Clientes" Match="NavLinkMatch.Prefix">Clientes</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Seguridad" Expanded="false">
-        <MudNavLink Href="/Usuario" Match="NavLinkMatch.Prefix">Usuarios</MudNavLink>
-        <MudNavLink Href="/rol" Match="NavLinkMatch.Prefix">Rol</MudNavLink>
-    </MudNavGroup>
+            <!-- Bloque 1: Inicio -->
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Inicio</MudNavLink>
 
-            <!-- Separador visual -->
-            <MudDivider Class="my-3" Style="background:white" />
-    
-            <!-- Botón de logout -->
-            <MudNavLink @onclick="Logout" Style="cursor:pointer;">
-                <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Error" />
-                <MudText Color="Color.Error" Inline Style="font-weight: bold;">  Cerrar Sesión</MudText>
-            </MudNavLink>
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-bottom: 3px; width: 100%;"></div>
+            <!-- Bloque 2: Guias -->
+            <MudNavLink Href="/guias" Match="NavLinkMatch.Prefix">Guias</MudNavLink>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-bottom: 3px; width: 100%;"></div>
+            <!-- Bloque 3: Configuración -->
+            <MudNavGroup Title="Configuracion" Expanded="false">
+                <MudNavLink Href="/propietario" Match="NavLinkMatch.Prefix">Propietarios</MudNavLink>
+                <MudNavLink Href="/camion" Match="NavLinkMatch.Prefix">Camiones</MudNavLink>
+                <MudNavLink Href="/conductor" Match="NavLinkMatch.Prefix">Conductores</MudNavLink>
+                <MudNavLink Href="/centrodistribucion" Match="NavLinkMatch.Prefix">Centros de Distribucion</MudNavLink>
+                <MudNavLink Href="/Clientes" Match="NavLinkMatch.Prefix">Clientes</MudNavLink>
+            </MudNavGroup>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-bottom: 3px; width: 100%;"></div>
+            <!-- Bloque 4: Seguridad -->
+            <MudNavGroup Title="Seguridad" Expanded="false">
+                <MudNavLink Href="/Usuario" Match="NavLinkMatch.Prefix">Usuarios</MudNavLink>
+                <MudNavLink Href="/rol" Match="NavLinkMatch.Prefix">Rol</MudNavLink>
+            </MudNavGroup>
+
+            <!-- Separador visual antes del botón -->
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-bottom: 3px; width: 100%;"></div>
+            <!-- Botón de logout centrado -->
+            <div style="display: flex; justify-content: center; padding: 15px 10px;">
+                <MudButton OnClick="@Logout"
+                           StartIcon="@Icons.Material.Filled.Logout"
+                           Color="Color.Error"
+                           Variant="Variant.Filled"
+                           Style="font-weight: bold;">
+                    Cerrar Sesión
+                </MudButton>
+            </div>
         </Authorized>
     </AuthorizeView>
-
 </MudNavMenu>
 @code {
     private async Task Logout()
