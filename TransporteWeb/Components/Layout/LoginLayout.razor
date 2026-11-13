@@ -1,14 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemeProvider Theme="@_temaPersonalizado" />
-<MudLayout>
-    <MudMainContent>
-        <MudPaper Height="50%" Width="50%" Class="mx-auto">
-            @Body
-        </MudPaper>
-    </MudMainContent>
-</MudLayout>
-
+<div class="d-flex align-center justify-center" style="min-height: 100vh; background-color: #f4f6f8;">
+    <div style="width: 100%; max-width: 420px; padding: 2rem;">
+        @Body
+    </div>
+</div>
 
 @code {
     bool _drawerOpen = true;
